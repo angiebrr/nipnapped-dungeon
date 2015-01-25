@@ -16,12 +16,12 @@
 
 class Actor 
 {
-    public :
-        int x,y; // Position on map
+    public:
+        int x, y; // Position on map
         int code; // ASCII Code
         TCODColor color; // ASCII Color
 
-        Actor(int x, int y, int code, const TCODColor &color);
+        Actor(int x, int y, int code, const TCODColor& color);
         void render() const;
 };
 

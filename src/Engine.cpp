@@ -19,11 +19,10 @@
 // CONSTRUCTOR
 Engine::Engine() 
 {
-    TCODConsole::initRoot(80, 50, "NipNapped Dungeon", false);
-    player = new Actor(40, 25, '@', TCODColor::white);
-    actors.push(player);
-    actors.push(new Actor(60, 13, '@', TCODColor::yellow));
-    map = new Map(80, 45);
+    TCODConsole::initRoot(80, 50, "NipNapped Dungeon", false); // x, y, windowTitle, isFullscreen
+    player = new Actor(40, 25, '@', TCODColor::white); // Arbitrarily place player (will be centered in first room)
+    actors.push(player); // Add player
+    map = new Map(80, 45); // Generate the map
 }
 
 // DESTRUCTOR

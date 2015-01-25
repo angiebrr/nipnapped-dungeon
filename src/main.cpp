@@ -2,6 +2,7 @@
 #include "Actor.hpp"
 #include "Map.hpp"
 #include "Engine.hpp"
+#include "BspListener.hpp"
 
 // ===================================================================================================================================
 // main.cpp

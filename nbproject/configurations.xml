@@ -5,6 +5,7 @@
       <df name="src">
         <in>Actor.cpp</in>
         <in>Actor.hpp</in>
+        <in>BspListener.hpp</in>
         <in>Engine.cpp</in>
         <in>Engine.hpp</in>
         <in>Map.cpp</in>
@@ -49,6 +50,8 @@
       <item path="src/Actor.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/Actor.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/BspListener.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/Engine.cpp" ex="false" tool="1" flavor2="0">
       </item>

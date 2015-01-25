@@ -1,4 +1,3 @@
-
 #ifndef MAP_HPP
 #define	MAP_HPP
 
@@ -20,7 +19,7 @@
 struct Tile 
 {
     bool canWalk;
-    Tile() : canWalk(true) {}
+    Tile() : canWalk(false) {}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,7 +28,9 @@ struct Tile
  
 class Map 
 {
-    public :
+    public:
+        static const int ROOM_MAX_SIZE = 12;
+        static const int ROOM_MIN_SIZE = 6;
         int width, height;
 
         Map(int width, int height);
@@ -37,9 +38,12 @@ class Map
         bool isWall(int x, int y) const;
         void render() const;
 
-    protected :
+    protected:
         Tile* tiles;
+        friend class BspListener;
 
+        void dig(int x1, int y1, int x2, int y2);
+        void createRoom(bool first, int x1, int y1, int x2, int y2);
         void setWall(int x, int y);
 };
 
