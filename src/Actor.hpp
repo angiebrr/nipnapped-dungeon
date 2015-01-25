@@ -24,7 +24,7 @@ class Actor
         bool blocks; // Can we walk on this actor?
         Attacker* attacker; // Something that deals damages
         Destructible* destructible; // Something that can be damaged
-        AI* myAI; // Something self-updating
+        AI* ai; // Something self-updating
  
         Actor(int x, int y, int code, const char* name, const TCODColor& color);
         void render() const;

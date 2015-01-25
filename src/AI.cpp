@@ -145,7 +145,7 @@ bool PlayerAI::moveOrAttack(Actor* owner, int targetx,int targety)
             // It's dead. Actor can move over it.
             else
             {   
-                printf("There's a %s here\n", actor->name);
+                engine.gui->message(TCODColor::white, "There's a %s here\n", actor->name);
             }
         }
     }

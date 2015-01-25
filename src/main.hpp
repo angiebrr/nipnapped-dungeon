@@ -16,16 +16,18 @@
 
 class Actor;
 
-#include <stdio.h>
 #include <math.h>
+#include <stdio.h>
+#include <stdarg.h>
 #include "libtcod.hpp"
 #include "Destructible.hpp"
 #include "Attacker.hpp"
 #include "AI.hpp"
 #include "Actor.hpp"
 #include "Map.hpp"
-#include "Engine.hpp"
 #include "BspListener.hpp"
+#include "GUI.hpp"
+#include "Engine.hpp"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

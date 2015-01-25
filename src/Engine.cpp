@@ -21,13 +21,19 @@ Engine::Engine(int screenWidth, int screenHeight) :
     
     // Make and add player
     player = new Actor(40, 25, '@', "Lucky", TCODColor::white);
-    player->destructible = new PlayerDestructible(30, 2, "Lucky's corpse");
+    player->destructible = new PlayerDestructible(30, 2, "Lucky's Corpse");
     player->attacker = new Attacker(5);
-    player->myAI = new PlayerAI();
+    player->ai = new PlayerAI();
     actors.push(player);
     
     // Generate the map
-    map = new Map(80, 45);
+    map = new Map(80, 43);
+    
+    // Generate the GUI
+    gui = new GUI();
+    
+    // Add beginning message
+    gui->message(TCODColor::red, "May the odds be ever in your favor, Lucky.\n Prepare to perish in the Catacombs of Kitty The Grey.");
 }
 
 // DESTRUCTOR
@@ -35,6 +41,7 @@ Engine::~Engine()
 {
     actors.clearAndDelete();
     delete map;
+    delete gui;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +49,7 @@ Engine::~Engine()
 // ==================================================================================================================================
 // UPDATE()
 // ----------------------------------------------------------------------------------------------------------------------------------
-// Updates all actors' statuses and 
+// Updates all actors' statuses and states.
 // ==================================================================================================================================
 void Engine::update()
 {    
@@ -50,9 +57,9 @@ void Engine::update()
     if (gameStatus == STARTUP) 
         map->computeFov();
     
-    // Change to idle and lister for key press.
+    // Change to idle and lister for key press and mouse movement.
     gameStatus = IDLE;
-    TCODSystem::checkForEvent(TCOD_EVENT_KEY_PRESS, &lastKey, NULL);
+    TCODSystem::checkForEvent(TCOD_EVENT_KEY_PRESS|TCOD_EVENT_MOUSE, &lastKey, &mouse);
     
     // Update the player
     player->update();
@@ -90,11 +97,9 @@ void Engine::render()
             actor->render();
     }
     
-    // Draw player.  
+    // Draw player and the player's statistics  
     player->render();
-    
-    // Show the player's statistics.
-    TCODConsole::root->print(1,screenHeight-2, "HP : %d/%d", (int)player->destructible->hp, (int)player->destructible->maxHp);
+    gui->render();
 }
 
 // ==================================================================================================================================

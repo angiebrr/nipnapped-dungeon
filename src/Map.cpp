@@ -162,18 +162,18 @@ void Map::addMonster(int x, int y)
     if ( myRand->getInt(0, 100) < 80 ) 
     {
         Actor* mouse = new Actor(x, y, 'm', "Mouse", TCODColor::desaturatedSky);     
-        mouse->destructible = new MonsterDestructible(10, 0, "dead mouse");
+        mouse->destructible = new MonsterDestructible(10, 0, "Dead Mouse");
         mouse->attacker = new Attacker(3);
-        mouse->myAI = new MonsterAI();
+        mouse->ai = new MonsterAI();
         engine.actors.push(mouse);
     }
     // We create a vacuum 20% of the time
     else
     {
         Actor* vacuum = new Actor(x, y,'V',"Vacuum", TCODColor::darkerBlue);
-        vacuum->destructible = new MonsterDestructible(16, 1, "perished vacuum");
+        vacuum->destructible = new MonsterDestructible(16, 1, "Perished Vacuum");
         vacuum->attacker = new Attacker(4);
-        vacuum->myAI = new MonsterAI();
+        vacuum->ai = new MonsterAI();
         engine.actors.push(vacuum);
     }
 }
@@ -210,6 +210,10 @@ bool Map::canWalk(int x, int y) const
 // ==================================================================================================================================
 bool Map::isInFov(int x, int y) const 
 {
+    // Make sure it's within the map's boundaries
+    if ( x < 0 || x >= width || y < 0 || y >= height ) 
+        return false;
+    
     // If the tiles are in the player's field of view, set explored to true
     if ( walkMap->isInFov(x, y) ) 
     {
