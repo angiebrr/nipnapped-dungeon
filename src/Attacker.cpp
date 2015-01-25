@@ -24,7 +24,7 @@ Attacker::Attacker(float power) : power(power) {}
 void Attacker::attack(Actor* owner, Actor* target) 
 {
     // If it's destructible and not dead, resume attacking.
-    if ( target->destructible && ! target->destructible->isDead() ) 
+    if ( target->destructible && !target->destructible->isDead() ) 
     {
         if ( power - target->destructible->defense > 0 ) 
             printf("%s attacks %s for %g hit points.\n", owner->name, target->name, power - target->destructible->defense); 

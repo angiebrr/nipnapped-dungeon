@@ -27,9 +27,14 @@ class AI
 class MonsterAI : public AI 
 {
     public:
+        // How many turns the monster chases the player after losing his sight
+        static const int TRACKING_TURNS = 3;
+        
         void update(Actor* owner);
 
     protected:
+        int moveCount; // Number of turns player has gone out of sight
+        
         void moveOrAttack(Actor* owner, int targetx, int targety);
 };
 

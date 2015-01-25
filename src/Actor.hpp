@@ -29,7 +29,6 @@ class Actor
         Actor(int x, int y, int code, const char* name, const TCODColor& color);
         void render() const;
         void update();
-        bool moveOrAttack(int x, int y);
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

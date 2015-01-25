@@ -162,7 +162,7 @@ void Map::addMonster(int x, int y)
     if ( myRand->getInt(0, 100) < 80 ) 
     {
         Actor* mouse = new Actor(x, y, 'm', "Mouse", TCODColor::desaturatedSky);     
-        mouse->destructible = new MonsterDestructible(10, 0, "Dead mouse.");
+        mouse->destructible = new MonsterDestructible(10, 0, "dead mouse");
         mouse->attacker = new Attacker(3);
         mouse->myAI = new MonsterAI();
         engine.actors.push(mouse);
@@ -170,8 +170,8 @@ void Map::addMonster(int x, int y)
     // We create a vacuum 20% of the time
     else
     {
-        Actor* vacuum = new Actor(x,y,'V',"Vacuum", TCODColor::darkerBlue);
-        vacuum->destructible = new MonsterDestructible(16, 1, "Perished vacuum.");
+        Actor* vacuum = new Actor(x, y,'V',"Vacuum", TCODColor::darkerBlue);
+        vacuum->destructible = new MonsterDestructible(16, 1, "perished vacuum");
         vacuum->attacker = new Attacker(4);
         vacuum->myAI = new MonsterAI();
         engine.actors.push(vacuum);

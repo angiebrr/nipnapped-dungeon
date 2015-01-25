@@ -21,7 +21,7 @@ Engine::Engine(int screenWidth, int screenHeight) :
     
     // Make and add player
     player = new Actor(40, 25, '@', "Lucky", TCODColor::white);
-    player->destructible = new PlayerDestructible( 30, 2, "Lucky's corpse.");
+    player->destructible = new PlayerDestructible(30, 2, "Lucky's corpse");
     player->attacker = new Attacker(5);
     player->myAI = new PlayerAI();
     actors.push(player);

@@ -17,7 +17,7 @@
  // CLASS: ENGINE
 class Engine 
 {
-    public:  
+    public: 
         // ENUM: GAME STATUS
         enum GameStatus 
         {
@@ -27,13 +27,13 @@ class Engine
             VICTORY, // The player won.
             DEFEAT // The player was killed.
          };
+        int screenWidth;
+        int screenHeight;
         TCODList<Actor*> actors;
         Actor* player;
         Map* map;
         int fovRadius;
         GameStatus gameStatus;
-        int screenWidth;
-        int screenHeight;
         TCOD_key_t lastKey;
  
         Engine(int screenWidth, int screenHeight);

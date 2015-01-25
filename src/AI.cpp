@@ -13,6 +13,76 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// ==================================================================================================================================
+// MONSTER: UPDATE()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Listens for player movements to move toward or attack.
+// ==================================================================================================================================
+void MonsterAI::update(Actor* owner) 
+{
+    // Don't do anything if monster is dead.
+    if ( owner->destructible && owner->destructible->isDead() )
+        return;
+    
+    // If we can see the player(or the player sees us), move toward him.
+    if ( engine.map->isInFov(owner->x,owner->y) )
+        moveCount = TRACKING_TURNS;
+    // If he went out of our sight, keep track of him for a few turns.
+    else 
+        moveCount--;
+    
+    // If he isn't out of sight, move or attack toward him.
+   if (moveCount > 0)
+       moveOrAttack(owner, engine.player->x, engine.player->y); 
+}
+
+
+// ==================================================================================================================================
+// MONSTER: MOVEORATTACK()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Moves toward player if the monster saw or recently saw player. Attack if player is close enough.
+// ==================================================================================================================================
+void MonsterAI::moveOrAttack(Actor* owner, int targetx, int targety) 
+{
+    // Calculate Euclidean distance between monster and target coordinates
+    int dx = targetx - owner->x;
+    int dy = targety - owner->y;
+    float distance = sqrtf( dx*dx + dy*dy );
+
+    // Add side steps to enable wall sliding
+    int stepdx = (dx > 0 ? 1 : -1);
+    int stepdy = (dy > 0 ? 1 : -1);    
+    
+    // If we're out of melee range, go toward the target
+    if (distance >= 2) 
+    {
+        // Normalize the distance vector between the target and the monster
+        dx = (int)( round(dx/distance) );
+        dy = (int)( round(dy/distance) );
+        
+        // If the tiles are walkable, then walk on them. 
+        if ( engine.map->canWalk(owner->x+dx,owner->y + dy) ) 
+        {
+            owner->x += dx;
+            owner->y += dy;
+        }
+        // If we can move in the x-direction this way, then go this way
+        else if ( engine.map->canWalk(owner->x + stepdx, owner->y) )
+        {
+            owner->x += stepdx;
+        }
+        // If we can move in the y-direction this way, then go this way
+        else if ( engine.map->canWalk(owner->x, owner-> y+stepdy) )
+        {
+            owner->y += stepdy;
+        }
+    }
+    // If the monster is an attacker and is in melee range, attack!
+    else if (owner->attacker) 
+    {
+        owner->attacker->attack(owner, engine.player);
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -84,58 +154,6 @@ bool PlayerAI::moveOrAttack(Actor* owner, int targetx,int targety)
     owner->y = targety;
     
     return true;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// ==================================================================================================================================
-// MONSTER: UPDATE()
-// ----------------------------------------------------------------------------------------------------------------------------------
-// Listens for player movements to move toward or attack.
-// ==================================================================================================================================
-void MonsterAI::update(Actor* owner) 
-{
-    // Don't do anything if monster is dead.
-    if ( owner->destructible && owner->destructible->isDead() )
-        return;
-    
-    // If we can see the player(or the player sees us), move toward him.
-    if ( engine.map->isInFov(owner->x,owner->y) )
-        moveOrAttack(owner, engine.player->x, engine.player->y);
-}
-
-
-// ==================================================================================================================================
-// MONSTER: MOVEORATTACK()
-// ----------------------------------------------------------------------------------------------------------------------------------
-// 
-// ==================================================================================================================================
-void MonsterAI::moveOrAttack(Actor* owner, int targetx, int targety) 
-{
-    // Calculate Euclidean distance between monster and target coordinates
-    int dx = targetx - owner->x;
-    int dy = targety - owner->y;
-    float distance = sqrtf( dx*dx + dy*dy );    
-    
-    // If we're out of melee range, go toward the target
-    if ( distance >= 2 ) 
-    {
-        // Normalize the distance vector between the target and the monster
-        dx = (int)( round(dx/distance) );
-        dy = (int)( round(dy/distance) );
-        
-        // If the tiles are walkable, then walk on them. 
-        if ( engine.map->canWalk(owner->x+dx,owner->y + dy) ) 
-        {
-            owner->x += dx;
-            owner->y += dy;
-        }
-    }
-    // If the monster is an attacker and is in melee range, attack!
-    else if (owner->attacker) 
-    {
-        owner->attacker->attack(owner, engine.player);
-    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
