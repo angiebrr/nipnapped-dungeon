@@ -1,8 +1,4 @@
-#include "libtcod.hpp"
-#include "Map.hpp"
-#include "Actor.hpp"
-#include "Engine.hpp"
-#include "BspListener.hpp"
+#include "main.hpp"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -156,7 +152,7 @@ void Map::createRoom(bool first, int x1, int y1, int x2, int y2)
 // ==================================================================================================================================
 // ADDMONSTER()
 // ----------------------------------------------------------------------------------------------------------------------------------
-// Create a monster and add it to the actors.
+// Creates a monster and add it to the actors.
 // ==================================================================================================================================
 void Map::addMonster(int x, int y) 
 {
@@ -164,10 +160,22 @@ void Map::addMonster(int x, int y)
     
     // We create a mouse 80% of the time
     if ( myRand->getInt(0, 100) < 80 ) 
-        engine.actors.push( new Actor(x, y, 'm', "mouse", TCODColor::desaturatedSky) );
+    {
+        Actor* mouse = new Actor(x, y, 'm', "Mouse", TCODColor::desaturatedSky);     
+        mouse->destructible = new MonsterDestructible(10, 0, "Dead mouse.");
+        mouse->attacker = new Attacker(3);
+        mouse->myAI = new MonsterAI();
+        engine.actors.push(mouse);
+    }
     // We create a vacuum 20% of the time
     else
-        engine.actors.push( new Actor(x,y,'V',"vacuum", TCODColor::darkerBlue) );               
+    {
+        Actor* vacuum = new Actor(x,y,'V',"Vacuum", TCODColor::darkerBlue);
+        vacuum->destructible = new MonsterDestructible(16, 1, "Perished vacuum.");
+        vacuum->attacker = new Attacker(4);
+        vacuum->myAI = new MonsterAI();
+        engine.actors.push(vacuum);
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,7 +196,7 @@ bool Map::canWalk(int x, int y) const
     {
         Actor* actor = *iterator;
         
-        if ( actor->x == x && actor->y == y )
+        if ( (actor->blocks) && (actor->x == x) && (actor->y == y) )
             return false;
     }
     

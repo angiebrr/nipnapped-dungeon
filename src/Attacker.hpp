@@ -1,9 +1,10 @@
-#include "main.hpp"
+#ifndef ATTACKER_HPP
+#define	ATTACKER_HPP
 
 // ===================================================================================================================================
-// main.cpp
+// Attacker.hpp
 // -----------------------------------------------------------------------------------------------------------------------------------
-//
+// Header for a class that helps define objects that can attack.
 // -----------------------------------------------------------------------------------------------------------------------------------
 // Angela Gross
 // NipNapped Dungeon
@@ -11,18 +12,16 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Engine engine(80,50);
-
-int main() 
+class Attacker 
 {
-    while ( !TCODConsole::isWindowClosed() ) 
-    {
-        engine.update();
-        engine.render();
-        TCODConsole::flush();
-    }
-    
-    return 0;
-}
+    public:
+        float power; // Hit points given
+
+        Attacker(float power);
+        void attack(Actor* owner, Actor* target);
+};
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#endif	// ATTACKER_HPP
+

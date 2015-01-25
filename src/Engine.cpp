@@ -1,7 +1,4 @@
-#include "libtcod.hpp"
-#include "Actor.hpp"
-#include "Map.hpp"
-#include "Engine.hpp"
+#include "main.hpp"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -17,12 +14,20 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // CONSTRUCTOR
-Engine::Engine() : fovRadius(10), gameStatus(STARTUP) 
+Engine::Engine(int screenWidth, int screenHeight) : 
+    screenWidth(screenWidth), screenHeight(screenHeight), fovRadius(10), gameStatus(STARTUP) 
 {
-    TCODConsole::initRoot(80, 50, "NipNapped Dungeon", false); // x, y, windowTitle, isFullscreen
-    player = new Actor(40, 25, '@', "lucky", TCODColor::white); // Arbitrarily place player (will be centered in first room)
-    actors.push(player); // Add player
-    map = new Map(80, 45); // Generate the map
+    TCODConsole::initRoot(screenWidth, screenHeight, "NipNapped Dungeon", false); // x, y, windowTitle, isFullscreen
+    
+    // Make and add player
+    player = new Actor(40, 25, '@', "Lucky", TCODColor::white);
+    player->destructible = new PlayerDestructible( 30, 2, "Lucky's corpse.");
+    player->attacker = new Attacker(5);
+    player->myAI = new PlayerAI();
+    actors.push(player);
+    
+    // Generate the map
+    map = new Map(80, 45);
 }
 
 // DESTRUCTOR
@@ -37,45 +42,29 @@ Engine::~Engine()
 // ==================================================================================================================================
 // UPDATE()
 // ----------------------------------------------------------------------------------------------------------------------------------
-// Handles key events so player's movements are tracked. Checks walls so the player can't walk through them. Also updates player's 
-// field of view.
+// Updates all actors' statuses and 
 // ==================================================================================================================================
 void Engine::update()
 {    
-    TCOD_key_t key;
-    int dx = 0, dy = 0;
+    // Computer field of view for the first frame of the game.
+    if (gameStatus == STARTUP) 
+        map->computeFov();
     
-    if ( gameStatus == STARTUP ) map->computeFov();
+    // Change to idle and lister for key press.
     gameStatus = IDLE;
+    TCODSystem::checkForEvent(TCOD_EVENT_KEY_PRESS, &lastKey, NULL);
     
-    // Calculate the direction of change of movement.
-    TCODSystem::checkForEvent(TCOD_EVENT_KEY_PRESS, &key, NULL);
-    switch(key.vk) 
-    {
-        case TCODK_UP: dy = -1; break;
-        case TCODK_DOWN: dy = 1; break;
-        case TCODK_LEFT: dx = -1; break;
-        case TCODK_RIGHT: dx = 1; break;
-        default: break;
-    }
+    // Update the player
+    player->update();
     
-    // If we tried to move, then start new turn, move/attack, and recompute FOV.
-    if ( (dx != 0) || (dy != 0) ) 
-    {
-        gameStatus = NEW_TURN;
-        
-        if ( player->moveOrAttack(player->x + dx, player->y + dy) ) 
-            map->computeFov();
-    }
-    
-    // Loop over actors and update all of them (except the player).
-    if (gameStatus == NEW_TURN) 
+    // Loop through all the actors and update (except the player)
+    if ( gameStatus == NEW_TURN ) 
     {
         for (Actor** iterator = actors.begin(); iterator != actors.end(); iterator++) 
         {
             Actor* actor = *iterator;
             
-            if (actor != player) 
+            if (actor != player)
                 actor->update();
         }
     }
@@ -92,14 +81,31 @@ void Engine::render()
     TCODConsole::root->clear();
     map->render();
     
-    // Only draw actors if they are in the player's FOV.
+    // Only draw actors if they are in the player's FOV and isn't the player.
     for (Actor** iterator = actors.begin(); iterator != actors.end(); iterator++) 
     {
         Actor* actor = *iterator;
         
-        if ( map->isInFov(actor->x, actor->y) ) 
+        if ( (actor != player) && map->isInFov(actor->x, actor->y) ) 
             actor->render();
     }
+    
+    // Draw player.  
+    player->render();
+    
+    // Show the player's statistics.
+    TCODConsole::root->print(1,screenHeight-2, "HP : %d/%d", (int)player->destructible->hp, (int)player->destructible->maxHp);
+}
+
+// ==================================================================================================================================
+// SENDTOFRONT()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Send the actor to the front of the list.
+// ==================================================================================================================================
+void Engine::sendToFront(Actor* actor)
+{
+    actors.remove(actor);
+    actors.insertBefore(actor, 0);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

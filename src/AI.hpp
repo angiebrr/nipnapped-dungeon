@@ -1,12 +1,12 @@
-#ifndef ACTOR_HPP
-#define ACTOR_HPP
+#ifndef AI_HPP
+#define	AI_HPP
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ===================================================================================================================================
-// Actor.hpp
+// AI.hpp
 // -----------------------------------------------------------------------------------------------------------------------------------
-// Header for a class that defines an actor's ASCII character along with their background and foreground colors.
+// Header for a class that helps define the behavior of an object.
 // -----------------------------------------------------------------------------------------------------------------------------------
 // Angela Gross
 // NipNapped Dungeon
@@ -14,24 +14,38 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class Actor 
+// CLASS: AI
+class AI 
 {
     public:
-        int x, y; // Position on map
-        int code; // ASCII Code
-        TCODColor color; // ASCII Color
-        const char* name; // The actor's name
-        bool blocks; // Can we walk on this actor?
-        Attacker* attacker; // Something that deals damages
-        Destructible* destructible; // Something that can be damaged
-        AI* myAI; // Something self-updating
- 
-        Actor(int x, int y, int code, const char* name, const TCODColor& color);
-        void render() const;
-        void update();
-        bool moveOrAttack(int x, int y);
+        virtual void update(Actor* owner) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // ACTOR_HPP
+// CLASS: MONSTERAI
+class MonsterAI : public AI 
+{
+    public:
+        void update(Actor* owner);
+
+    protected:
+        void moveOrAttack(Actor* owner, int targetx, int targety);
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// CLASS: PLAYERAI
+class PlayerAI : public AI 
+{
+    public:
+        void update(Actor* owner);
+
+    protected:
+        bool moveOrAttack(Actor* owner, int targetx, int targety);
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#endif	// AI_HPP
+

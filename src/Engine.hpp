@@ -14,15 +14,11 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
- 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
- // ENGINE CLASS
+ // CLASS: ENGINE
 class Engine 
 {
     public:  
-        // GAME STATUS
+        // ENUM: GAME STATUS
         enum GameStatus 
         {
             STARTUP, // First frame of the game.
@@ -35,17 +31,19 @@ class Engine
         Actor* player;
         Map* map;
         int fovRadius;
-
-        Engine();
+        GameStatus gameStatus;
+        int screenWidth;
+        int screenHeight;
+        TCOD_key_t lastKey;
+ 
+        Engine(int screenWidth, int screenHeight);
         ~Engine();
         void update();
         void render();
-        
-    private:
-        GameStatus gameStatus;
+        void sendToFront(Actor* actor);      
 };
  
-// ENGINE CLASS INSTANCE
+// INSTANCE: ENGINE CLASS
 extern Engine engine;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

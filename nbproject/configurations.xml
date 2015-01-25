@@ -3,14 +3,21 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="src">
+        <in>AI.cpp</in>
+        <in>AI.hpp</in>
         <in>Actor.cpp</in>
         <in>Actor.hpp</in>
+        <in>Attacker.cpp</in>
+        <in>Attacker.hpp</in>
         <in>BspListener.hpp</in>
+        <in>Destructible.cpp</in>
+        <in>Destructible.hpp</in>
         <in>Engine.cpp</in>
         <in>Engine.hpp</in>
         <in>Map.cpp</in>
         <in>Map.hpp</in>
         <in>main.cpp</in>
+        <in>main.hpp</in>
       </df>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -47,11 +54,23 @@
           </ccTool>
         </makeTool>
       </makefileType>
+      <item path="src/AI.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/AI.hpp" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/Actor.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/Actor.hpp" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/Attacker.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Attacker.hpp" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/BspListener.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/Destructible.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Destructible.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/Engine.cpp" ex="false" tool="1" flavor2="0">
       </item>
@@ -62,6 +81,8 @@
       <item path="src/Map.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="4">
+      </item>
+      <item path="src/main.hpp" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>

@@ -1,12 +1,12 @@
-#ifndef ACTOR_HPP
-#define ACTOR_HPP
+#ifndef MAIN_HPP
+#define MAIN_HPP
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ===================================================================================================================================
-// Actor.hpp
+// main.hpp
 // -----------------------------------------------------------------------------------------------------------------------------------
-// Header for a class that defines an actor's ASCII character along with their background and foreground colors.
+// Main header that includes all dependencies
 // -----------------------------------------------------------------------------------------------------------------------------------
 // Angela Gross
 // NipNapped Dungeon
@@ -14,24 +14,19 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class Actor 
-{
-    public:
-        int x, y; // Position on map
-        int code; // ASCII Code
-        TCODColor color; // ASCII Color
-        const char* name; // The actor's name
-        bool blocks; // Can we walk on this actor?
-        Attacker* attacker; // Something that deals damages
-        Destructible* destructible; // Something that can be damaged
-        AI* myAI; // Something self-updating
- 
-        Actor(int x, int y, int code, const char* name, const TCODColor& color);
-        void render() const;
-        void update();
-        bool moveOrAttack(int x, int y);
-};
+class Actor;
+
+#include <stdio.h>
+#include <math.h>
+#include "libtcod.hpp"
+#include "Destructible.hpp"
+#include "Attacker.hpp"
+#include "AI.hpp"
+#include "Actor.hpp"
+#include "Map.hpp"
+#include "Engine.hpp"
+#include "BspListener.hpp"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // ACTOR_HPP
+#endif

@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include "libtcod.hpp"
-#include "Actor.hpp"
-#include "Map.hpp"
-#include "Engine.hpp"
+#include "main.hpp"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -18,7 +14,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // CONSTRUCTOR
-Actor::Actor(int x, int y, int code, const char* name, const TCODColor& color) : x(x), y(y), code(code), color(color), name(name) {}
+Actor::Actor(int x, int y, int code, const char* name, const TCODColor& color) : 
+    x(x), y(y), code(code), color(color), name(name), blocks(true), attacker(NULL), destructible(NULL), myAI(NULL){}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  
@@ -41,7 +38,8 @@ void Actor::render() const
 // ==================================================================================================================================
 void Actor::update() 
 {
-    printf("The %s growls!\n", name);
+    if (myAI != NULL)
+        myAI->update(this);
 }
 
 // ==================================================================================================================================
