@@ -3,6 +3,12 @@
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <df root="." name="0">
       <df name="src">
+        <in>Actor.cpp</in>
+        <in>Actor.hpp</in>
+        <in>Engine.cpp</in>
+        <in>Engine.hpp</in>
+        <in>Map.cpp</in>
+        <in>Map.hpp</in>
         <in>main.cpp</in>
       </df>
     </df>
@@ -32,7 +38,7 @@
           <buildCommandWorkingDir>.</buildCommandWorkingDir>
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
-          <executablePath></executablePath>
+          <executablePath>nipnapped.exe</executablePath>
           <ccTool>
             <incDir>
               <pElem>src</pElem>
@@ -40,6 +46,18 @@
           </ccTool>
         </makeTool>
       </makefileType>
+      <item path="src/Actor.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Actor.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/Engine.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Engine.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/Map.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Map.hpp" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="4">
       </item>
     </conf>

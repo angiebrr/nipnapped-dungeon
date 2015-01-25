@@ -1,12 +1,12 @@
-#include "libtcod.hpp"
-#include "Actor.hpp"
-#include "Map.hpp"
-#include "Engine.hpp"
+#ifndef ENGINE_HPP
+#define	ENGINE_HPP
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ===================================================================================================================================
-// main.cpp
+// Engine.hpp
 // -----------------------------------------------------------------------------------------------------------------------------------
-//
+// Header for a class that links together the different parts of the game and allows main to run it.
 // -----------------------------------------------------------------------------------------------------------------------------------
 // Angela Gross
 // NipNapped Dungeon
@@ -14,18 +14,22 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Engine engine;
-
-int main() 
+class Engine 
 {
-    while ( !TCODConsole::isWindowClosed() ) 
-    {
-        engine.update();
-        engine.render();
-        TCODConsole::flush();
-    }
-    
-    return 0;
-}
+    public :
+        TCODList<Actor*> actors;
+        Actor* player;
+        Map* map;
+
+        Engine();
+        ~Engine();
+        void update();
+        void render();
+};
+ 
+extern Engine engine;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#endif	// ENGINE_HPP
+

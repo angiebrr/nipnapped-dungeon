@@ -1,12 +1,12 @@
-#include "libtcod.hpp"
-#include "Actor.hpp"
-#include "Map.hpp"
-#include "Engine.hpp"
+#ifndef ACTOR_HPP
+#define ACTOR_HPP
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ===================================================================================================================================
-// main.cpp
+// Actor.hpp
 // -----------------------------------------------------------------------------------------------------------------------------------
-//
+// Header for a class that defines an actor's ASCII character along with their background and foreground colors.
 // -----------------------------------------------------------------------------------------------------------------------------------
 // Angela Gross
 // NipNapped Dungeon
@@ -14,18 +14,17 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Engine engine;
-
-int main() 
+class Actor 
 {
-    while ( !TCODConsole::isWindowClosed() ) 
-    {
-        engine.update();
-        engine.render();
-        TCODConsole::flush();
-    }
-    
-    return 0;
-}
+    public :
+        int x,y; // Position on map
+        int code; // ASCII Code
+        TCODColor color; // ASCII Color
+
+        Actor(int x, int y, int code, const TCODColor &color);
+        void render() const;
+};
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#endif // ACTOR_HPP
