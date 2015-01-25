@@ -17,7 +17,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // CONSTRUCTOR
-Engine::Engine() 
+Engine::Engine() : fovRadius(10), computeFov(true) 
 {
     TCODConsole::initRoot(80, 50, "NipNapped Dungeon", false); // x, y, windowTitle, isFullscreen
     player = new Actor(40, 25, '@', TCODColor::white); // Arbitrarily place player (will be centered in first room)
@@ -37,7 +37,8 @@ Engine::~Engine()
 // ==================================================================================================================================
 // UPDATE()
 // ----------------------------------------------------------------------------------------------------------------------------------
-// Handles key events so player's movements are tracked. Checks walls so the player can't walk through them.
+// Handles key events so player's movements are tracked. Checks walls so the player can't walk through them. Also updates player's 
+// field of view.
 // ==================================================================================================================================
 void Engine::update()
 {
@@ -48,21 +49,40 @@ void Engine::update()
     {
         case TCODK_UP: 
             if ( !map->isWall(player->x, player->y-1) )
-                player->y--;   
+            {
+                player->y--;
+                computeFov = true;
+            }
         break;
         case TCODK_DOWN: 
             if ( !map->isWall(player->x, player->y+1) )
+            {
                 player->y++;
+                computeFov = true;
+            }
         break;
         case TCODK_LEFT: 
             if ( !map->isWall(player->x-1, player->y) )
+            {
                 player->x--;
+                computeFov=true;
+            }
         break;
         case TCODK_RIGHT: 
             if ( !map->isWall(player->x+1, player->y) )
+            {
                 player->x++;
+                computeFov=true;
+            }
         break;
         default:break;
+    }
+    
+    // We only calculate the FOV when we move since it's expensive
+    if (computeFov) 
+    {
+        map->computeFov();
+        computeFov=false;
     }
 }
 
@@ -77,10 +97,15 @@ void Engine::render()
     TCODConsole::root->clear();
     map->render();
     
-    // Draw actors.
-    for (Actor **iterator = actors.begin(); iterator != actors.end(); iterator++) 
+    // Only draw actors if they are in the player's FOV
+    for (Actor** iterator = actors.begin(); iterator != actors.end(); iterator++) 
     {
-        (*iterator)->render();
+        Actor* actor = *iterator;
+        
+        if ( map->isInFov(actor->x, actor->y) ) 
+        {
+            actor->render();
+        }
     }
 }
 

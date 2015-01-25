@@ -18,8 +18,8 @@
 
 struct Tile 
 {
-    bool canWalk;
-    Tile() : canWalk(false) {}
+    bool explored;
+    Tile() : explored(false) {}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,16 +35,19 @@ class Map
 
         Map(int width, int height);
         ~Map();
-        bool isWall(int x, int y) const;
         void render() const;
+        void computeFov();
+        bool isInFov(int x, int y) const;
+        bool isWall(int x, int y) const;
+        bool isExplored(int x, int y) const;
 
     protected:
-        Tile* tiles;
-        friend class BspListener;
+        Tile* tiles; // Helps keep track of explored areas
+        TCODMap* walkMap; // Helps keep track of wall coordinates and player field of view
+        friend class BspListener; // Helps build rooms
 
         void dig(int x1, int y1, int x2, int y2);
         void createRoom(bool first, int x1, int y1, int x2, int y2);
-        void setWall(int x, int y);
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
