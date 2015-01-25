@@ -137,13 +137,63 @@ void Map::createRoom(bool first, int x1, int y1, int x2, int y2)
     {
         TCODRandom* myRand = TCODRandom::getInstance();
         
-        if ( myRand->getInt(0,3) == 0 ) 
-            engine.actors.push(new Actor((x1 + x2)/2, (y1 + y2)/2, '@', TCODColor::yellow));
+        // Generate number of monsters for the room.
+        int numMonsters = myRand->getInt(0, MAX_ROOM_MONSTERS);
+        
+        while(numMonsters > 0) 
+        {
+            int x = myRand->getInt(x1, x2);
+            int y = myRand->getInt(y1, y2);
+            
+            if ( canWalk(x,y) )
+                addMonster(x,y);
+            
+            numMonsters--;  
+        }
     }
+}
+
+// ==================================================================================================================================
+// ADDMONSTER()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Create a monster and add it to the actors.
+// ==================================================================================================================================
+void Map::addMonster(int x, int y) 
+{
+    TCODRandom* myRand = TCODRandom::getInstance();
+    
+    // We create a mouse 80% of the time
+    if ( myRand->getInt(0, 100) < 80 ) 
+        engine.actors.push( new Actor(x, y, 'm', "mouse", TCODColor::desaturatedSky) );
+    // We create a vacuum 20% of the time
+    else
+        engine.actors.push( new Actor(x,y,'V',"vacuum", TCODColor::darkerBlue) );               
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// ==================================================================================================================================
+// CANWALK()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Returns whether or not player can walk on this tile (covers walls and NPCs)
+// ==================================================================================================================================
+bool Map::canWalk(int x, int y) const 
+{
+    // Can't walk; this is a wall.
+    if ( isWall(x,y) )
+        return false;
+
+    // Cycle through NPCs to see if coordinates are the NPCs. If so, we can't walk.
+    for (Actor** iterator = engine.actors.begin(); iterator != engine.actors.end(); iterator++) 
+    {
+        Actor* actor = *iterator;
+        
+        if ( actor->x == x && actor->y == y )
+            return false;
+    }
+    
+    return true;
+}
 
 // ==================================================================================================================================
 // ISFOV()
@@ -163,16 +213,6 @@ bool Map::isInFov(int x, int y) const
 }
 
 // ==================================================================================================================================
-// ISWALL()
-// ----------------------------------------------------------------------------------------------------------------------------------
-// Returns whether or not an actor can walk on the tile, and so if they can't it must be a wall.
-// ==================================================================================================================================
-bool Map::isWall(int x, int y) const
-{
-    return walkMap->isWalkable(x,y) == false;
-}
-
-// ==================================================================================================================================
 // ISEXPLORED()
 // ----------------------------------------------------------------------------------------------------------------------------------
 // Returns whether or not a tile has been explored by the plauer.
@@ -180,6 +220,16 @@ bool Map::isWall(int x, int y) const
 bool Map::isExplored(int x, int y) const 
 {
     return tiles[x + y*width].explored;
+}
+
+// ==================================================================================================================================
+// ISWALL()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Returns whether or not an actor can walk on the tile, and so if they can't it must be a wall.
+// ==================================================================================================================================
+bool Map::isWall(int x, int y) const
+{
+    return walkMap->isWalkable(x,y) == false;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

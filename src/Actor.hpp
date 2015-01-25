@@ -20,9 +20,12 @@ class Actor
         int x, y; // Position on map
         int code; // ASCII Code
         TCODColor color; // ASCII Color
-
-        Actor(int x, int y, int code, const TCODColor& color);
+        const char* name; // The actor's name
+ 
+        Actor(int x, int y, int code, const char* name, const TCODColor& color);
         void render() const;
+        void update();
+        bool moveOrAttack(int x, int y);
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

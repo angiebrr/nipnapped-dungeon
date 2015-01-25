@@ -14,9 +14,23 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+ 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ // ENGINE CLASS
 class Engine 
 {
-    public:
+    public:  
+        // GAME STATUS
+        enum GameStatus 
+        {
+            STARTUP, // First frame of the game.
+            IDLE, // No new turn. Redraw the same screen.
+            NEW_TURN, // Update the monster's position.
+            VICTORY, // The player won.
+            DEFEAT // The player was killed.
+         };
         TCODList<Actor*> actors;
         Actor* player;
         Map* map;
@@ -28,9 +42,10 @@ class Engine
         void render();
         
     private:
-        bool computeFov;
+        GameStatus gameStatus;
 };
  
+// ENGINE CLASS INSTANCE
 extern Engine engine;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

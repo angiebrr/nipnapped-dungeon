@@ -31,15 +31,17 @@ class Map
     public:
         static const int ROOM_MAX_SIZE = 12;
         static const int ROOM_MIN_SIZE = 6;
+        static const int MAX_ROOM_MONSTERS = 3;
         int width, height;
 
         Map(int width, int height);
         ~Map();
         void render() const;
         void computeFov();
-        bool isInFov(int x, int y) const;
-        bool isWall(int x, int y) const;
+        bool canWalk(int x, int y) const;
+        bool isInFov(int x, int y) const;    
         bool isExplored(int x, int y) const;
+        bool isWall(int x, int y) const;
 
     protected:
         Tile* tiles; // Helps keep track of explored areas
@@ -48,6 +50,7 @@ class Map
 
         void dig(int x1, int y1, int x2, int y2);
         void createRoom(bool first, int x1, int y1, int x2, int y2);
+        void addMonster(int x, int y);
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

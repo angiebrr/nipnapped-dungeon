@@ -1,5 +1,8 @@
+#include <stdio.h>
 #include "libtcod.hpp"
 #include "Actor.hpp"
+#include "Map.hpp"
+#include "Engine.hpp"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -15,7 +18,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // CONSTRUCTOR
-Actor::Actor(int x, int y, int code, const TCODColor& color) : x(x), y(y), code(code), color(color) {}
+Actor::Actor(int x, int y, int code, const char* name, const TCODColor& color) : x(x), y(y), code(code), color(color), name(name) {}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  
@@ -29,6 +32,44 @@ void Actor::render() const
 {
     TCODConsole::root->setChar(x, y, code);
     TCODConsole::root->setCharForeground(x, y, color);
+}
+
+// ==================================================================================================================================
+// UPDATE()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// 
+// ==================================================================================================================================
+void Actor::update() 
+{
+    printf("The %s growls!\n", name);
+}
+
+// ==================================================================================================================================
+// MOVEORATTACK()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Whether or not actor can move. It can and does move if there isn't a wall or the actor isn't moving over them (attacking).
+// ==================================================================================================================================
+bool Actor::moveOrAttack(int x, int y) 
+{
+    // Can't move or attack if it's a wall
+    if ( engine.map->isWall(x, y) ) 
+        return false;
+    
+    // Loop through actors to see if played tried to move over (attack) an NPC. Can't move.
+    for (Actor** iterator = engine.actors.begin(); iterator != engine.actors.end(); iterator++) 
+    {
+        Actor* actor = *iterator;
+        if ( (actor->x == x) && (actor->y == y) ) 
+        {
+           printf("The %s laughs at your puny efforts to attack him!\n", actor->name);
+           return false;
+        }
+    }
+    
+    this->x = x;
+    this->y = y;
+    
+    return true;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
