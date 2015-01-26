@@ -24,6 +24,7 @@ Engine::Engine(int screenWidth, int screenHeight) :
     player->destructible = new PlayerDestructible(30, 2, "Lucky's Corpse");
     player->attacker = new Attacker(5);
     player->ai = new PlayerAI();
+    player->container = new Container(26);
     actors.push(player);
     
     // Generate the map

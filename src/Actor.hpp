@@ -25,8 +25,11 @@ class Actor
         Attacker* attacker; // Something that deals damages
         Destructible* destructible; // Something that can be damaged
         AI* ai; // Something self-updating
+        Pickable* pickable; // Something that can be picked and used
+        Container* container; // Something that can contain actors
  
         Actor(int x, int y, int code, const char* name, const TCODColor& color);
+        ~Actor();
         void render() const;
         void update();
 };

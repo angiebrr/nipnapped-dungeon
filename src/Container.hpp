@@ -1,12 +1,12 @@
-#ifndef MAIN_HPP
-#define MAIN_HPP
+#ifndef CONTAINER_HPP
+#define	CONTAINER_HPP
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ===================================================================================================================================
-// main.hpp
+// Container.hpp
 // -----------------------------------------------------------------------------------------------------------------------------------
-// Main header that includes all dependencies
+// Header for a class that defines a container of actors.
 // -----------------------------------------------------------------------------------------------------------------------------------
 // Angela Gross
 // NipNapped Dungeon
@@ -14,23 +14,19 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class Actor;
+class Container 
+{
+    public:
+        int size; // Maximum number of actors. 0 = unlimited
+        TCODList<Actor*> inventory;       
 
-#include <math.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include "libtcod.hpp"
-#include "Destructible.hpp"
-#include "Attacker.hpp"
-#include "AI.hpp"
-#include "Pickable.hpp"
-#include "Container.hpp"
-#include "Actor.hpp"
-#include "Map.hpp"
-#include "BspListener.hpp"
-#include "GUI.hpp"
-#include "Engine.hpp"
+        Container(int size);
+        ~Container();
+        bool add(Actor* actor);
+        void remove(Actor* actor);
+};
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif
+#endif	// CONTAINER_HPP
+

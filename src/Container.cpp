@@ -3,9 +3,9 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ===================================================================================================================================
-// Actor.cpp
+// Container.cpp
 // -----------------------------------------------------------------------------------------------------------------------------------
-// Class that defines an actor's ASCII character along with their background and foreground colors.
+// Class that defines a container of actors.
 // -----------------------------------------------------------------------------------------------------------------------------------
 // Angela Gross
 // NipNapped Dungeon
@@ -14,44 +14,59 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // CONSTRUCTOR
-Actor::Actor(int x, int y, int code, const char* name, const TCODColor& color) : 
-    x(x), y(y), code(code), color(color), name(name), blocks(true), attacker(NULL), destructible(NULL), ai(NULL), pickable(NULL), 
-    container(NULL) {}
+Container::Container(int size) : size(size) {}
 
 // DESTRUCTOR
-Actor::~Actor()
+Container::~Container() 
 {
-    // Only remove parts that are used.
-    if (attacker) delete attacker;
-    if (destructible) delete destructible;
-    if (ai) delete ai;
-    if (pickable) delete pickable;
-    if (container) delete container;   
+    inventory.clearAndDelete();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
- 
+
 // ==================================================================================================================================
-// RENDER()
+// ADD()
 // ----------------------------------------------------------------------------------------------------------------------------------
-// Uses some console methods from TCOD to set the ASCII code and foreground color on the root console, leaving the background color 
-// unmodified.
+// Adds an actor to the inventory if it isn't full and returns true/false depending on whether or not it could be added.
 // ==================================================================================================================================
-void Actor::render() const 
+bool Container::add(Actor* actor)
 {
-    TCODConsole::root->setChar(x, y, code);
-    TCODConsole::root->setCharForeground(x, y, color);
+    // Inventory is full
+    if( (size > 0) && inventory.size() >= size)
+        return false;
+    
+    // If it's stackable, find the right item to stack to.
+    if(actor->pickable->stackable)
+    {
+        for (Actor** iterator = inventory.begin(); iterator != inventory.end(); iterator++) 
+        {
+            Actor* invActor = *iterator;
+
+            // Increment the item count and remove from the ground.
+            if(actor->name == invActor->name)
+            {
+                invActor->pickable->count++;
+                engine.actors.remove(actor);
+                return true;
+            }
+        }
+    }
+    
+    // Either isn't stackable or couldn't find an item to stack with.
+    inventory.push(actor);
+    
+    return true;
 }
 
 // ==================================================================================================================================
-// UPDATE()
+// REMOVE()
 // ----------------------------------------------------------------------------------------------------------------------------------
-// Use the attached AI to act.
+// Removes an actor from the inventory.
 // ==================================================================================================================================
-void Actor::update() 
+void Container::remove(Actor* actor)
 {
-    if (ai != NULL)
-        ai->update(this);
+    inventory.remove(actor);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+

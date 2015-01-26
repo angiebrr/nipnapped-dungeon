@@ -25,6 +25,7 @@ class Destructible
         
         Destructible(float maxHp, float defense, const char* corpseName);
         float takeDamage(Actor* owner, float damage);
+        float heal(float amount);
         inline bool isDead(){ return hp <= 0; }
         virtual void die(Actor* owner);
 };
@@ -32,7 +33,7 @@ class Destructible
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // CLASS: MONSTERDESTRUCTIBLE
-class MonsterDestructible : public Destructible
+class MonsterDestructible: public Destructible
 {
     public:
         MonsterDestructible(float maxHp, float defense, const char* corpseName);
@@ -42,7 +43,7 @@ class MonsterDestructible : public Destructible
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // CLASS: PLAYERDESTRUCTIBLE
-class PlayerDestructible : public Destructible
+class PlayerDestructible: public Destructible
 {
     public:
         PlayerDestructible(float maxHp, float defense, const char* corpseName);

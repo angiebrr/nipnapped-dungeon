@@ -25,7 +25,7 @@ void MonsterAI::update(Actor* owner)
         return;
     
     // If we can see the player(or the player sees us), move toward him.
-    if ( engine.map->isInFov(owner->x,owner->y) )
+    if ( engine.map->isInFov(owner->x, owner->y) )
         moveCount = TRACKING_TURNS;
     // If he went out of our sight, keep track of him for a few turns.
     else 
@@ -105,6 +105,7 @@ void PlayerAI::update(Actor* owner)
         case TCODK_DOWN : dy = 1; break;
         case TCODK_LEFT : dx = -1; break;
         case TCODK_RIGHT : dx = 1; break;
+        case TCODK_CHAR : handleActionKey(owner, engine.lastKey.c); break;
         default:break;
     }
     
@@ -119,7 +120,7 @@ void PlayerAI::update(Actor* owner)
 }
 
 // ==================================================================================================================================
-// PLAYER: moveOrAttack()
+// PLAYER: MOVEORATTACK()
 // ----------------------------------------------------------------------------------------------------------------------------------
 // Whether or not actor can move. It can and does move if there isn't a wall or the actor isn't moving over them (attacking).
 // ==================================================================================================================================
@@ -129,24 +130,26 @@ bool PlayerAI::moveOrAttack(Actor* owner, int targetx,int targety)
     if ( engine.map->isWall(targetx, targety) ) 
         return false;
 
-    // Loop through actors to see if played tried to move over (attack) a destructible actor..
+    // Loop through actors to see if there's an actor to attack or display.
     for (Actor** iterator = engine.actors.begin(); iterator != engine.actors.end(); iterator++) 
     {
         Actor* actor = *iterator;
+        
+        // Is the actor a corpse or an item?
+        bool corpseOrItem = ( actor->destructible && actor->destructible->isDead() ) || actor->pickable;
          
-        if ( actor->destructible && (actor->x == targetx) && (actor->y == targety) ) 
-        {
+        if ( (actor->x == targetx) && (actor->y == targety) ) 
+        {      
             // If it isn't dead, attack. Can't move.
-            if( !actor->destructible->isDead() )
+            if( actor->destructible && !actor->destructible->isDead() )
             {
                owner->attacker->attack(owner, actor);
                 return false; 
             }
-            // It's dead. Actor can move over it.
-            else
-            {   
+            
+            // If it's a corpse or item, display its information.
+            if(corpseOrItem)
                 engine.gui->message(TCODColor::white, "There's a %s here\n", actor->name);
-            }
         }
     }
     
@@ -155,6 +158,94 @@ bool PlayerAI::moveOrAttack(Actor* owner, int targetx,int targety)
     
     return true;
 }
+
+// ==================================================================================================================================
+// PLAYER: HANDLEACTIONKEY()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Handles key events from the player that help them pick items into their inventory.
+// ==================================================================================================================================
+void PlayerAI::handleActionKey(Actor* owner, int code) 
+{
+    switch(code) 
+    {
+        case 'g' : // pickup item
+        {
+            bool picked = false;
+            
+            for (Actor** iterator = engine.actors.begin(); iterator != engine.actors.end(); iterator++) 
+            {
+                Actor* actor = *iterator;
+                
+                if ( actor->pickable && actor->x == owner->x && actor->y == owner->y ) 
+                {
+                    // Can the player pick up the item?
+                    if ( actor->pickable->pick(actor, owner) ) 
+                    {
+                        picked = true;
+                        engine.gui->message(TCODColor::lightGrey,"You pick the %s.", actor->name);
+                        break;
+                    } 
+                    // If not, inventory must be full.
+                    else if (!picked) 
+                    {
+                        picked = true;
+                        engine.gui->message(TCODColor::red,"Your inventory is full.");
+                    }
+                }
+            }
+            
+            // Didn't find anything
+            if(!picked)
+                engine.gui->message(TCODColor::lightGrey, "There's nothing here.");
+            
+            // Start new turn
+            engine.gameStatus=Engine::NEW_TURN;
+        }
+        break;
+        case 'i' : // Display inventory
+        {
+            // Get actor from inventory
+            Actor* actor = chooseFromInventory(owner);
+            
+            // If it isn't null, use the item and start a new turn.
+            if (actor) 
+            {
+                actor->pickable->use(actor,owner);
+                engine.gameStatus=Engine::NEW_TURN;
+            }
+        }
+        
+        break;
+    }
+}
+
+// ==================================================================================================================================
+// PLAYER: CHOOSEFROMINVENTORY()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Displays inventory and wait for valid key press.
+// ==================================================================================================================================
+Actor* PlayerAI::chooseFromInventory(Actor* owner)
+{
+    // Draw inventory on screen
+    engine.gui->renderInventory(owner);
+    
+    // Wait for a key press
+    TCOD_key_t key;
+    TCODSystem::waitForEvent(TCOD_EVENT_KEY_PRESS, &key, NULL, true);
+    
+    if ( key.vk == TCODK_CHAR ) 
+    {
+        // Get item number in inventory (a - z)
+        int actorIndex = key.c - 'a';
+        
+        // Get item
+        if ( actorIndex >= 0 && actorIndex < owner->container->inventory.size() )
+            return owner->container->inventory.get(actorIndex);
+    }
+    
+    // No valid item was selected
+    return NULL;
+}   
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

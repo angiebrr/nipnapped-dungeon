@@ -10,6 +10,8 @@
         <in>Attacker.cpp</in>
         <in>Attacker.hpp</in>
         <in>BspListener.hpp</in>
+        <in>Container.cpp</in>
+        <in>Container.hpp</in>
         <in>Destructible.cpp</in>
         <in>Destructible.hpp</in>
         <in>Engine.cpp</in>
@@ -18,6 +20,8 @@
         <in>GUI.hpp</in>
         <in>Map.cpp</in>
         <in>Map.hpp</in>
+        <in>Pickable.cpp</in>
+        <in>Pickable.hpp</in>
         <in>main.cpp</in>
         <in>main.hpp</in>
       </df>
@@ -70,6 +74,10 @@
       </item>
       <item path="src/BspListener.hpp" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/Container.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Container.hpp" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/Destructible.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/Destructible.hpp" ex="false" tool="3" flavor2="0">
@@ -85,6 +93,10 @@
       <item path="src/Map.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/Map.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/Pickable.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/Pickable.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="4">
       </item>

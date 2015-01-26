@@ -46,6 +46,25 @@ float Destructible::takeDamage(Actor* owner, float damage)
 }
 
 // ==================================================================================================================================
+// PARENT: HEAL()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Handles healing 
+// ==================================================================================================================================
+float Destructible::heal(float amount)
+{
+    hp += amount;
+    
+    // Prevents overhealing
+    if (hp > maxHp) 
+    {
+        amount -= hp - maxHp;
+        hp = maxHp;
+    }
+    
+    return amount;
+}
+
+// ==================================================================================================================================
 // PARENT: DIE()
 // ----------------------------------------------------------------------------------------------------------------------------------
 // Transforms targeted actor into a corpse.
@@ -66,7 +85,7 @@ void Destructible::die(Actor* owner)
 
 // MONSTER: CONSTRUCTOR
 MonsterDestructible::MonsterDestructible(float maxHp, float defense, const char *corpseName) :
-    Destructible(maxHp,defense,corpseName) {}
+    Destructible(maxHp, defense, corpseName) {}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -85,7 +104,7 @@ void MonsterDestructible::die(Actor* owner)
  
 // PLAYER: CONSTRUCTOR
 PlayerDestructible::PlayerDestructible(float maxHp, float defense, const char *corpseName) :
-    Destructible(maxHp,defense,corpseName) {}
+    Destructible(maxHp, defense, corpseName) {}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

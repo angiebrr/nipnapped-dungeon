@@ -22,11 +22,15 @@ class GUI
         static const int BAR_WIDTH = 20;
         static const int MSG_X = BAR_WIDTH + 2;
         static const int MSG_HEIGHT = PANEL_HEIGHT - 1;
+        static const int INVENTORY_WIDTH = 50;
+        static const int INVENTORY_HEIGHT = 28;
         
         GUI();
         ~GUI();
         void render();
-        void message(const TCODColor& col, const char* text, ...);
+        void message(const TCODColor& color, const char* text, ...);
+        void renderInventory(Actor* owner);
+        void clearInventoryConsole();
 
     protected:
         // STRUCT: MESSAGE
@@ -38,7 +42,8 @@ class GUI
             ~Message();
         };
         TCODList<Message*> log;
-        TCODConsole* console;
+        TCODConsole* inventoryConsole;
+        TCODConsole* mainConsole;
 
         void renderBar(int x, int y, int width, const char* name, float value, float maxValue, const TCODColor& barColor,
             const TCODColor& backColor);

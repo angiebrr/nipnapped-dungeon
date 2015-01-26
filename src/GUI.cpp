@@ -16,13 +16,15 @@
 // GUI: CONSTRUCTOR
 GUI::GUI()
 {
-    console = new TCODConsole(engine.screenWidth, PANEL_HEIGHT);
+    mainConsole = new TCODConsole(engine.screenWidth, PANEL_HEIGHT);
+    inventoryConsole = new TCODConsole(INVENTORY_WIDTH, INVENTORY_HEIGHT);
 }
 
 // GUI: DESTRUCTOR
 GUI::~GUI()
 {
-    delete console;
+    delete mainConsole;
+    delete inventoryConsole;
     log.clearAndDelete();
 }
 
@@ -36,8 +38,8 @@ GUI::~GUI()
 void GUI::render()
 {
     // Clear the console.
-    console->setDefaultBackground(TCODColor::black);
-    console->clear();
+    mainConsole->setDefaultBackground(TCODColor::black);
+    mainConsole->clear();
     
     // Draw a health bar.
     renderBar(1, 1, BAR_WIDTH, "HP", engine.player->destructible->hp, engine.player->destructible->maxHp,
@@ -49,8 +51,8 @@ void GUI::render()
     for (Message** iterator = log.begin(); iterator != log.end(); iterator++) 
     {
         Message* message= *iterator;
-        console->setDefaultForeground(message->color * fadeCoeff);
-        console->print(MSG_X, y ,message->text);
+        mainConsole->setDefaultForeground(message->color * fadeCoeff);
+        mainConsole->print(MSG_X, y ,message->text);
         y++;
         
         // The oldest line will have 40% luminosity, the second oldest 70%, and all other 100%.
@@ -64,7 +66,7 @@ void GUI::render()
     
     // blit the GUI console on the root console
     // console, xSrc, ySrc, wSrc, hSrc, destination console, blitxSrc, blitySrc 
-    TCODConsole::blit(console, 0, 0, engine.screenWidth, PANEL_HEIGHT, TCODConsole::root, 0, engine.screenHeight-PANEL_HEIGHT);
+    TCODConsole::blit(mainConsole, 0, 0, engine.screenWidth, PANEL_HEIGHT, TCODConsole::root, 0, engine.screenHeight-PANEL_HEIGHT);
 }
 
 // ==================================================================================================================================
@@ -113,6 +115,52 @@ void GUI::message(const TCODColor& color, const char* text, ...)
 }
 
 // ==================================================================================================================================
+// GUI: RENDERINVENTORY()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Renders inventory on the screen.
+// ==================================================================================================================================
+void GUI::renderInventory(Actor* owner)
+{   
+    // Display the inventory frame
+    inventoryConsole->setDefaultForeground( TCODColor(200, 180, 50) );
+    inventoryConsole->printFrame(0, 0, INVENTORY_WIDTH, INVENTORY_HEIGHT, true, TCOD_BKGND_DEFAULT, "Inventory");
+    
+    // Display the items with their keyboard shortcut (a - z)
+    inventoryConsole->setDefaultForeground(TCODColor::white);
+    int shortcut = 'a';
+    int y = 1;
+    for (Actor** iterator = owner->container->inventory.begin(); iterator != owner->container->inventory.end(); iterator++) 
+    {
+        Actor* actor = *iterator;
+        
+        // Print color, count, shortcut, and item name
+        inventoryConsole->setCharBackground(2, y, actor->pickable->color);
+        inventoryConsole->print(4, y, "[%i] (%c) %s", actor->pickable->count, shortcut, actor->name);
+        
+        // Update y and shortcut letter
+        y++;
+        shortcut++;
+    }
+    
+    // blit the inventory console on the root console
+    TCODConsole::blit(inventoryConsole, 0, 0, INVENTORY_WIDTH,INVENTORY_HEIGHT, TCODConsole::root, 
+        engine.screenWidth/2 - INVENTORY_WIDTH/2, engine.screenHeight/2 - INVENTORY_HEIGHT/2);
+    
+    TCODConsole::flush();
+}
+
+// ==================================================================================================================================
+// GUI: CLEARINVENTORYCONSOLE()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Resets inventory console colors to default background color.
+// ==================================================================================================================================
+void GUI::clearInventoryConsole()
+{
+    inventoryConsole->clear();
+    TCODConsole::flush();
+}
+
+// ==================================================================================================================================
 // GUI: RENDERBAR()
 // ----------------------------------------------------------------------------------------------------------------------------------
 // Adds health bar of player along with some text.
@@ -121,21 +169,21 @@ void GUI::renderBar(int x, int y, int width, const char* name, float value, floa
     const TCODColor& backColor)
 {
     // Fill the background
-    console->setDefaultBackground(backColor);
-    console->rect(x, y, width, 1, false, TCOD_BKGND_SET); // x, y, w, h, only bg changed, bg changed behavior
+    mainConsole->setDefaultBackground(backColor);
+    mainConsole->rect(x, y, width, 1, false, TCOD_BKGND_SET); // x, y, w, h, only bg changed, bg changed behavior
     
     // Get fraction of bar to be filled and fill it.
     int barWidth = (int)(value / maxValue * width);   
     if ( barWidth > 0 )
     {
-        console->setDefaultBackground(barColor);
-        console->rect(x, y, barWidth, 1, false, TCOD_BKGND_SET);
+        mainConsole->setDefaultBackground(barColor);
+        mainConsole->rect(x, y, barWidth, 1, false, TCOD_BKGND_SET);
     }
     
     // Print text on top of the bar
-    console->setDefaultForeground(TCODColor::white);
+    mainConsole->setDefaultForeground(TCODColor::white);
     // x, y, how bg change, alignment, printf string with parameters
-    console->printEx(x + width/2, y, TCOD_BKGND_NONE, TCOD_CENTER, "%s : %g/%g", name, value, maxValue); 
+    mainConsole->printEx(x + width/2, y, TCOD_BKGND_NONE, TCOD_CENTER, "%s : %g/%g", name, value, maxValue); 
 }
 
 // ==================================================================================================================================
@@ -171,8 +219,8 @@ void GUI::renderMouseLook()
     }
     
     // Display the list of actors under the mouse cursor
-    console->setDefaultForeground(TCODColor::lightGrey);
-    console->print(1, 0, buffer);
+    mainConsole->setDefaultForeground(TCODColor::lightGrey);
+    mainConsole->print(1, 0, buffer);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
