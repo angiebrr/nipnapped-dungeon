@@ -61,7 +61,7 @@ void MonsterAI::moveOrAttack(Actor* owner, int targetx, int targety)
         dy = (int)( round(dy/distance) );
         
         // If the tiles are walkable, then walk on them. 
-        if ( engine.map->canWalk(owner->x+dx,owner->y + dy) ) 
+        if ( engine.map->canWalk(owner->x + dx,owner->y + dy) ) 
         {
             owner->x += dx;
             owner->y += dy;
@@ -72,7 +72,7 @@ void MonsterAI::moveOrAttack(Actor* owner, int targetx, int targety)
             owner->x += stepdx;
         }
         // If we can move in the y-direction this way, then go this way
-        else if ( engine.map->canWalk(owner->x, owner-> y+stepdy) )
+        else if ( engine.map->canWalk(owner->x, owner->y + stepdy) )
         {
             owner->y += stepdy;
         }
@@ -214,7 +214,19 @@ void PlayerAI::handleActionKey(Actor* owner, int code)
                 engine.gameStatus=Engine::NEW_TURN;
             }
         }
-        
+        break;
+        case 'd' : // drop item 
+        {
+            // Get actor from inventory
+            Actor* actor = chooseFromInventory(owner);
+            
+            // If it isn't null, drop the item and start a new turn.
+            if (actor) 
+            {
+                actor->pickable->drop(actor,owner);
+                engine.gameStatus = Engine::NEW_TURN;
+            }           
+        }
         break;
     }
 }
@@ -246,6 +258,56 @@ Actor* PlayerAI::chooseFromInventory(Actor* owner)
     // No valid item was selected
     return NULL;
 }   
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// CONFUSEDMONSTER: CONSTRUCTOR
+ConfusedMonsterAI::ConfusedMonsterAI(int numTurns, AI* oldAI) : numTurns(numTurns), oldAI(oldAI) {}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// ==================================================================================================================================
+// CONFUSEDMONSTER: UPDATE()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Random moves the agent around and attacks anything it runs into.
+// ==================================================================================================================================
+void ConfusedMonsterAI::update(Actor* owner)
+{
+    // Get random direction to move
+    TCODRandom* myRand = TCODRandom::getInstance();
+    int dx = myRand->getInt(-1, 1);
+    int dy = myRand->getInt(-1, 1);
+    
+    // If the agent moves in any direction
+    if(dx != 0 || dy != 0)
+    {
+        int targetx = owner->x + dx;
+        int targety = owner->y + dy;
+        
+        // If the target coordinates are walkable, walk on them
+        if( engine.map->canWalk(targetx, targety) )
+        {
+            owner->x = targetx;
+            owner->y = targety;
+        }
+        // Otherwise, try to attack them
+        else
+        {
+           Actor* actor = engine.getActor(targetx, targety);
+           
+           if(actor)
+               owner->attacker->attack(owner, actor);
+        }
+    }
+    
+    // Decrement the number of turns the agent is affected and, if its turns are up, then reset the AI
+    numTurns--;
+    if(numTurns == 0)
+    {
+        owner->ai = oldAI;
+        delete this;
+    }
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

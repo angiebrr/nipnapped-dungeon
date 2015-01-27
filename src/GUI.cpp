@@ -135,7 +135,7 @@ void GUI::renderInventory(Actor* owner)
         
         // Print color, count, shortcut, and item name
         inventoryConsole->setCharBackground(2, y, actor->pickable->color);
-        inventoryConsole->print(4, y, "[%i] (%c) %s", actor->pickable->count, shortcut, actor->name);
+        inventoryConsole->print(4, y, "(%c) %-s [%003i]", shortcut, actor->name, actor->pickable->count);
         
         // Update y and shortcut letter
         y++;

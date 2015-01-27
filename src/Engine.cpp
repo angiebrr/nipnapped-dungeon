@@ -21,8 +21,8 @@ Engine::Engine(int screenWidth, int screenHeight) :
     
     // Make and add player
     player = new Actor(40, 25, '@', "Lucky", TCODColor::white);
-    player->destructible = new PlayerDestructible(30, 2, "Lucky's Corpse");
-    player->attacker = new Attacker(5);
+    player->destructible = new PlayerDestructible(100, 2, "Lucky's Corpse");
+    player->attacker = new Attacker(10);
     player->ai = new PlayerAI();
     player->container = new Container(26);
     actors.push(player);
@@ -113,6 +113,113 @@ void Engine::sendToFront(Actor* actor)
     actors.remove(actor);
     actors.insertBefore(actor, 0);
 }
+
+// ==================================================================================================================================
+// GETCLOSESTMONSTER()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Get the closest monster in range. If range is 0, then it's considered infinite.
+// ==================================================================================================================================
+Actor* Engine::getClosestMonster(int x, int y, float range) const
+{
+    Actor* closest = NULL;
+    float bestDistance = 1E6f;
+    
+    // Loop over all actors
+    for (Actor** iterator = actors.begin(); iterator != actors.end(); iterator++) 
+    {
+        Actor* actor = *iterator;
+        
+        // If it's alive, see if it's closer to the target and in range.
+        if ( actor != player && actor->destructible && !actor->destructible->isDead() )
+        {
+            float distance = actor->getDistance(x,y);
+            if ( distance < bestDistance && ( distance <= range || range == 0.0f ) ) 
+            {
+                bestDistance = distance;
+                closest = actor;
+            }
+        }
+    }
+    
+    return closest;
+}
+
+// ==================================================================================================================================
+// PICKATILE()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Creates another main game loop so user can pick a tile.
+// ==================================================================================================================================
+bool Engine::pickATile(int* x, int* y, float maxRange) 
+{
+    while ( !TCODConsole::isWindowClosed() ) 
+    {
+        // Draw map and actors
+        render();
+        
+        // Highlight where user can pick.
+        for (int cx = 0; cx < map->width; cx++) 
+        {
+            for (int cy = 0; cy < map->height; cy++) 
+            {
+                if ( map->isInFov(cx, cy) && ( maxRange == 0 || player->getDistance(cx, cy) <= maxRange) ) 
+                {
+                    TCODColor color = TCODConsole::root->getCharBackground(cx,cy);
+                     color = color * 1.2f;
+                    TCODConsole::root->setCharBackground(cx, cy, color);
+                }
+            }
+        }
+        
+        // Wait for key or mouse
+        TCODSystem::checkForEvent(TCOD_EVENT_KEY_PRESS|TCOD_EVENT_MOUSE, &lastKey, &mouse);
+        
+        // Fill the title under mouse cursor with white
+        if ( map->isInFov(mouse.cx,mouse.cy) && ( maxRange == 0 || player->getDistance(mouse.cx, mouse.cy) <= maxRange) )
+        {
+            TCODConsole::root->setCharBackground(mouse.cx,mouse.cy,TCODColor::white);
+        
+            // If left button pressed, return and update coordinates.
+            if (mouse.lbutton_pressed) 
+            {
+                *x = mouse.cx;
+                *y = mouse.cy;
+
+                return true;
+            }
+            
+            // Cancel if a key was pressed or the right button is pressed.
+            if (mouse.rbutton_pressed || lastKey.vk != TCODK_NONE) 
+                return false;       
+        }
+        
+        TCODConsole::flush();
+    }
+    
+    // Exit if main window closed
+    return false;
+}
+
+// ==================================================================================================================================
+// GETACTOR()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Retrieves an actor if found at the specified coordinates.
+// ==================================================================================================================================
+Actor* Engine::getActor(int x, int y) const
+{
+    // Loop over all actors
+    for (Actor** iterator = actors.begin(); iterator != actors.end(); iterator++) 
+    {
+        Actor* actor = *iterator;
+        
+        // Found actor
+        if(actor->x == x && actor->y == y)
+            return actor;
+    }
+    
+    // Didn't find actor
+    return NULL;
+}
+        
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
