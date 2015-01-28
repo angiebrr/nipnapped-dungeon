@@ -14,7 +14,6 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
- // CLASS: GUI
 class GUI : IPersistent
 {
     public:
@@ -24,9 +23,11 @@ class GUI : IPersistent
         static const int MSG_HEIGHT = PANEL_HEIGHT - 1;
         static const int INVENTORY_WIDTH = 50;
         static const int INVENTORY_HEIGHT = 28;
+        Menu menu;
         
         GUI();
         ~GUI();
+        void clear();
         void render();
         void message(const TCODColor& color, const char* text, ...);
         void renderInventory(Actor* owner);
@@ -35,7 +36,6 @@ class GUI : IPersistent
         void save(TCODZip& zip);
 
     protected:
-        // STRUCT: MESSAGE
         struct Message 
         {
             char* text;
@@ -43,6 +43,7 @@ class GUI : IPersistent
             Message(const char* text, const TCODColor& color);
             ~Message();
         };
+        
         TCODList<Message*> log;
         TCODConsole* inventoryConsole;
         TCODConsole* mainConsole;

@@ -25,10 +25,17 @@ Engine::Engine(int screenWidth, int screenHeight) :
 
 // DESTRUCTOR
 Engine::~Engine() 
+{   
+    term();
+    delete gui;
+}
+
+// TERMINATION
+void Engine::term()
 {
     actors.clearAndDelete();
-    delete map;
-    delete gui;
+    if (map) delete map;
+    gui->clear();
 }
 
 // INITIALIZATION
@@ -46,8 +53,9 @@ void Engine::init()
     map = new Map(80, 43);
     map->init(true);
    
-    // Add beginning message
-    gui->message(TCODColor::red, "May the odds be ever in your favor, Lucky.\n Prepare to perish in the Catacombs of Kitty The Grey.");
+    // Add beginning message and start game.
+    gui->message(TCODColor::red, "May the odds be ever in your favor, Lucky.\n Prepare to perish in the Catacombs of Kitty The Grey.");   
+    gameStatus = STARTUP;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,6 +74,13 @@ void Engine::update()
     // Change to idle and lister for key press and mouse movement.
     gameStatus = IDLE;
     TCODSystem::checkForEvent(TCOD_EVENT_KEY_PRESS|TCOD_EVENT_MOUSE, &lastKey, &mouse);
+    
+    // Pause to menu
+    if ( lastKey.vk == TCODK_ESCAPE ) 
+    {
+        save();
+        load();
+    }
     
     // Update the player
     player->update();

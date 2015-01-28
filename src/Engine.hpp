@@ -18,7 +18,6 @@
 class Engine 
 {
     public: 
-        // ENUM: GAME STATUS
         enum GameStatus 
         {
             STARTUP, // First frame of the game.
@@ -27,6 +26,7 @@ class Engine
             VICTORY, // The player won.
             DEFEAT // The player was killed.
          };
+         
         int screenWidth;
         int screenHeight;
         GUI* gui;
@@ -40,6 +40,7 @@ class Engine
  
         Engine(int screenWidth, int screenHeight);
         ~Engine();
+        void term();
         void init();
         void update();
         void render();

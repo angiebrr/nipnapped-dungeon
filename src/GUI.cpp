@@ -25,6 +25,12 @@ GUI::~GUI()
 {
     delete mainConsole;
     delete inventoryConsole;
+    clear();
+}
+
+// GUI: CLEAR
+void GUI::clear()
+{
     log.clearAndDelete();
 }
 

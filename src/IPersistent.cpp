@@ -22,9 +22,37 @@
 // ----------------------------------------------------------------------------------------------------------------------------------
 void Engine::load() 
 {
-    if ( TCODSystem::fileExists("game.sav") ) 
+    // Clear menu
+    engine.gui->menu.clear();
+    
+    // Add new game menu item
+    engine.gui->menu.addItem(Menu::NEW_GAME,"New game");
+    
+    // If the file exists, add continue menu item
+    if ( TCODSystem::fileExists("game.sav") )
+        engine.gui->menu.addItem(Menu::CONTINUE, "Continue");
+    
+    // Add exit menu item
+    engine.gui->menu.addItem(Menu::EXIT, "Exit");
+    
+    // Wait for the user to choose an item
+    Menu::MenuItemCode menuItem = engine.gui->menu.pick();
+    
+    // User chose exit or closed windows
+    if ( menuItem == Menu::EXIT || menuItem == Menu::NONE ) 
+    {
+        exit(0);
+    }
+    // User chose a new game
+    else if(menuItem == Menu::NEW_GAME)
+    {
+        engine.term();
+        engine.init();
+    }
+    else
     {
         TCODZip zip;
+        engine.term();
         zip.loadFromFile("game.sav");
         
         // Load the map
@@ -50,11 +78,12 @@ void Engine::load()
         
         // Load the GUI
         gui->load(zip);
+        
+        // Force FOV computation
+        gameStatus = STARTUP;
     } 
-    else 
-    {
-        engine.init();
-    }
+    
+    
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------

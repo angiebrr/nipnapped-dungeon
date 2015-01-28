@@ -1,12 +1,12 @@
-#ifndef MAIN_HPP
-#define MAIN_HPP
+#ifndef MENU_HPP
+#define	MENU_HPP
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ===================================================================================================================================
-// main.hpp
+// Menu.hpp
 // -----------------------------------------------------------------------------------------------------------------------------------
-// Main header that includes all dependencies
+// 
 // -----------------------------------------------------------------------------------------------------------------------------------
 // Angela Gross
 // NipNapped Dungeon
@@ -14,25 +14,33 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class Actor;
-
-#include <math.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include "libtcod.hpp"
-#include "IPersistent.hpp"
-#include "Destructible.hpp"
-#include "Attacker.hpp"
-#include "AI.hpp"
-#include "Pickable.hpp"
-#include "Container.hpp"
-#include "Actor.hpp"
-#include "Map.hpp"
-#include "BspListener.hpp"
-#include "Menu.hpp"
-#include "GUI.hpp"
-#include "Engine.hpp"
+class Menu 
+{
+    public:
+        enum MenuItemCode 
+        {
+            NONE, // Close game window
+            NEW_GAME, // Load a new game
+            CONTINUE, // Load a previous game
+            EXIT // Exit game
+        };
+        
+        ~Menu();
+        void clear();
+        void addItem(MenuItemCode code, const char *label);
+        MenuItemCode pick();
+        
+    protected:
+        struct MenuItem 
+        {
+            MenuItemCode code;
+            const char* label;
+        };
+        
+        TCODList<MenuItem*> items;
+};
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif
+#endif	// MENU_HPP
+
