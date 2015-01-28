@@ -42,7 +42,7 @@ void Engine::load()
         int numActors = zip.getInt();
         while (numActors > 0) 
         {
-                Actor *actor = new Actor(0, 0, 0, NULL, TCODColor::white);
+                Actor* actor = new Actor(0, 0, 0, NULL, TCODColor::white);
                 actor->load(zip);
                 actors.push(actor);
                 numActors--;
@@ -365,11 +365,32 @@ Pickable* Pickable::create(TCODZip& zip)
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------
+// Loads pickable attributes
+// ----------------------------------------------------------------------------------------------------------------------------------
+void Pickable::load(TCODZip& zip)
+{
+    count = zip.getInt();
+    stackable = zip.getInt();
+    color = zip.getColor();
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Saves pickable attributes
+// ----------------------------------------------------------------------------------------------------------------------------------
+void Pickable::save(TCODZip& zip)
+{
+    zip.putInt(count);
+    zip.putInt(stackable);
+    zip.putColor(&color);
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------
 // Loads healer attributes.
 // ----------------------------------------------------------------------------------------------------------------------------------
 void Healer::load(TCODZip& zip) 
 {
     amount = zip.getFloat();
+    Pickable::load(zip);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------
@@ -379,6 +400,7 @@ void Healer::save(TCODZip& zip)
 {
     zip.putInt(HEALER);
     zip.putFloat(amount);
+    Pickable::save(zip);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------
@@ -388,6 +410,7 @@ void LightningBolt::load(TCODZip& zip)
 {
     range = zip.getFloat();
     damage = zip.getFloat();
+    Pickable::load(zip);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------
@@ -398,6 +421,7 @@ void LightningBolt::save(TCODZip& zip)
     zip.putInt(LIGHTNING_BOLT);
     zip.putFloat(range);
     zip.putFloat(damage);
+    Pickable::save(zip);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------
@@ -407,6 +431,7 @@ void Confuser::load(TCODZip& zip)
 {
     numTurns = zip.getInt();
     range = zip.getFloat();
+    Pickable::load(zip);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------
@@ -417,6 +442,7 @@ void Confuser::save(TCODZip& zip)
     zip.putInt(CONFUSER);
     zip.putInt(numTurns);
     zip.putFloat(range);
+    Pickable::save(zip);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------
@@ -426,6 +452,7 @@ void FireBall::load(TCODZip& zip)
 {
     range = zip.getFloat();
     damage = zip.getFloat();
+    Pickable::load(zip);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------
@@ -435,7 +462,8 @@ void FireBall::save(TCODZip& zip)
 {
     zip.putInt(FIREBALL);
     zip.putFloat(range);
-    zip.putFloat(damage);	
+    zip.putFloat(damage);
+    Pickable::save(zip);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

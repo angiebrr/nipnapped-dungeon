@@ -31,8 +31,8 @@ class Pickable : IPersistent
         void drop(Actor* owner, Actor* wearer);
         virtual bool use(Actor* owner, Actor* wearer);
         static Pickable* create (TCODZip& zip);
-        virtual void load(TCODZip& zip) = 0;
-        virtual void save(TCODZip& zip) = 0;
+        void load(TCODZip& zip);
+        void save(TCODZip& zip);
         
     protected:
         enum PickableType 
