@@ -43,7 +43,7 @@ bool Container::add(Actor* actor)
             Actor* invActor = *iterator;
 
             // Increment the item count and remove from the ground.
-            if(actor->name == invActor->name)
+            if(actor->pickable->type == invActor->pickable->type)
             {
                 invActor->pickable->count++;
                 engine.actors.remove(actor);

@@ -70,7 +70,7 @@ void Map::render() const
                 else
                     TCODConsole::root->setCharBackground( x,y, lightGround);
             }
-            else
+            else if( isExplored(x, y) )
             {
                 if( isWall(x, y) )
                     TCODConsole::root->setCharBackground( x,y, darkWall);
@@ -223,7 +223,7 @@ void Map::addItem(int x, int y)
     {
         Actor* healthPotion = new Actor(x, y, '!', "health potion", TCODColor::green);
         healthPotion->blocks = false;
-        healthPotion->pickable = new Healer(1, true, TCODColor::green, 4);
+        healthPotion->pickable = new Healer(1, true, TCODColor::green, Pickable::HEALER, 4);
         engine.actors.push(healthPotion);
     }
     // Generates scroll of lightning bolt 10% of the time
@@ -231,7 +231,7 @@ void Map::addItem(int x, int y)
     {
         Actor* scrollOfLightningBolt = new Actor(x,y,'#',"scroll of lightning bolt", TCODColor::lightYellow);
         scrollOfLightningBolt->blocks = false;
-        scrollOfLightningBolt->pickable = new LightningBolt(1, true, TCODColor::lightYellow, 5, 20);
+        scrollOfLightningBolt->pickable = new LightningBolt(1, true, TCODColor::lightYellow, Pickable::LIGHTNING_BOLT, 5, 20);
         engine.actors.push(scrollOfLightningBolt);
     }
     // Generates scroll of fireball 10% of the time
@@ -239,7 +239,7 @@ void Map::addItem(int x, int y)
     {
         Actor* scrollOfFireball = new Actor(x, y, '#', "scroll of fireball", TCODColor::lightYellow);
         scrollOfFireball->blocks = false;
-        scrollOfFireball->pickable = new FireBall(1, true, TCODColor::lightYellow, 3, 12);
+        scrollOfFireball->pickable = new FireBall(1, true, TCODColor::lightYellow, Pickable::FIREBALL, 3, 12);
         engine.actors.push(scrollOfFireball);
     }
     // Generates scroll of confusion 10% of the time
@@ -247,7 +247,7 @@ void Map::addItem(int x, int y)
     {
         Actor* scrollOfConfusion = new Actor(x, y, '#', "scroll of confusion", TCODColor::lightYellow);
         scrollOfConfusion->blocks = false;
-        scrollOfConfusion->pickable = new Confuser(1, true, TCODColor::lightYellow, 10, 8);
+        scrollOfConfusion->pickable = new Confuser(1, true, TCODColor::lightYellow, Pickable::CONFUSER, 10, 8);
         engine.actors.push(scrollOfConfusion);
     }
 }

@@ -352,10 +352,10 @@ Pickable* Pickable::create(TCODZip& zip)
     // Create new instance
     switch(type) 
     {
-        case HEALER : pickable = new Healer(1, true, TCODColor::white, 0); break;
-        case LIGHTNING_BOLT : pickable = new LightningBolt(1, true, TCODColor::white, 0, 0); break;
-        case CONFUSER : pickable = new Confuser(1, true, TCODColor::white, 0, 0); break;
-        case FIREBALL : pickable = new FireBall(1, true, TCODColor::white, 0, 0); break;
+        case HEALER : pickable = new Healer(1, true, TCODColor::white, HEALER, 0); break;
+        case LIGHTNING_BOLT : pickable = new LightningBolt(1, true, TCODColor::white, LIGHTNING_BOLT, 0, 0); break;
+        case CONFUSER : pickable = new Confuser(1, true, TCODColor::white, CONFUSER, 0, 0); break;
+        case FIREBALL : pickable = new FireBall(1, true, TCODColor::white, FIREBALL, 0, 0); break;
     }
     
     // Load instance
@@ -398,7 +398,7 @@ void Healer::load(TCODZip& zip)
 // ----------------------------------------------------------------------------------------------------------------------------------
 void Healer::save(TCODZip& zip) 
 {
-    zip.putInt(HEALER);
+    zip.putInt(type);
     zip.putFloat(amount);
     Pickable::save(zip);
 }
@@ -418,7 +418,7 @@ void LightningBolt::load(TCODZip& zip)
 // ----------------------------------------------------------------------------------------------------------------------------------
 void LightningBolt::save(TCODZip& zip) 
 {
-    zip.putInt(LIGHTNING_BOLT);
+    zip.putInt(type);
     zip.putFloat(range);
     zip.putFloat(damage);
     Pickable::save(zip);
@@ -439,7 +439,7 @@ void Confuser::load(TCODZip& zip)
 // ----------------------------------------------------------------------------------------------------------------------------------
 void Confuser::save(TCODZip& zip) 
 {
-    zip.putInt(CONFUSER);
+    zip.putInt(type);
     zip.putInt(numTurns);
     zip.putFloat(range);
     Pickable::save(zip);
@@ -460,7 +460,7 @@ void FireBall::load(TCODZip& zip)
 // ----------------------------------------------------------------------------------------------------------------------------------
 void FireBall::save(TCODZip& zip) 
 {
-    zip.putInt(FIREBALL);
+    zip.putInt(type);
     zip.putFloat(range);
     zip.putFloat(damage);
     Pickable::save(zip);

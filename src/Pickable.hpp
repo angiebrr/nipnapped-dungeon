@@ -22,23 +22,23 @@
 class Pickable : IPersistent
 {
     public:
+        enum PickableType 
+        {
+            HEALER, LIGHTNING_BOLT, CONFUSER, FIREBALL
+        };
+        
         int count; // Number of pickable items
         bool stackable; // Whether or not it can stack
         TCODColor color; // ASCII Color of item
+        PickableType type; // Type of item
         
-        Pickable(int count, bool stackable, const TCODColor& color);
+        Pickable(int count, bool stackable, const TCODColor& color, PickableType type);
         bool pick(Actor* owner, Actor* wearer);
         void drop(Actor* owner, Actor* wearer);
         virtual bool use(Actor* owner, Actor* wearer);
         static Pickable* create (TCODZip& zip);
         void load(TCODZip& zip);
         void save(TCODZip& zip);
-        
-    protected:
-        enum PickableType 
-        {
-            HEALER, LIGHTNING_BOLT, CONFUSER, FIREBALL
-        };
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ class Healer : public Pickable
     public:
         float amount; // How much HP is healed
 
-        Healer(int count, bool stackable, const TCODColor& color, float amount);
+        Healer(int count, bool stackable, const TCODColor& color, PickableType type, float amount);
         bool use(Actor* owner, Actor* wearer);
         void load(TCODZip& zip);
         void save(TCODZip& zip);
@@ -63,7 +63,7 @@ class LightningBolt: public Pickable
     public:
         float range,damage;
         
-        LightningBolt(int count, bool stackable, const TCODColor& color, float range, float damage);
+        LightningBolt(int count, bool stackable, const TCODColor& color, PickableType type, float range, float damage);
         bool use(Actor* owner, Actor* wearer);
         void load(TCODZip& zip);
         void save(TCODZip& zip);
@@ -77,7 +77,7 @@ class FireBall : public Pickable
     public:
         float range, damage;
         
-        FireBall(int count, bool stackable, const TCODColor& color, float range, float damage);
+        FireBall(int count, bool stackable, const TCODColor& color, PickableType type, float range, float damage);
         bool use(Actor* owner, Actor* wearer);
         void load(TCODZip& zip);
         void save(TCODZip& zip);
@@ -92,7 +92,7 @@ class Confuser: public Pickable
         float range;
         int numTurns;
         
-        Confuser(int count, bool stackable, const TCODColor& color, float range, int numTurns);
+        Confuser(int count, bool stackable, const TCODColor& color, PickableType type, float range, int numTurns);
         bool use(Actor* owner, Actor* wearer);
         void load(TCODZip& zip);
         void save(TCODZip& zip);

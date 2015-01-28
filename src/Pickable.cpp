@@ -14,7 +14,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // CONSTRUCTOR
-Pickable::Pickable(int count, bool stackable, const TCODColor& color) : count(count), stackable(stackable), color(color) {}
+Pickable::Pickable(int count, bool stackable, const TCODColor& color, PickableType type) : 
+    count(count), stackable(stackable), color(color), type(type) {}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -83,7 +84,8 @@ void Pickable::drop(Actor* owner, Actor* wearer)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // HEALER: CONSTRUCTOR
-Healer::Healer(int count, bool stackable, const TCODColor& color, float amount) : Pickable(count, stackable, color), amount(amount) {}
+Healer::Healer(int count, bool stackable, const TCODColor& color, PickableType type, float amount) : 
+    Pickable(count, stackable, color, type), amount(amount) {}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -109,8 +111,8 @@ bool Healer::use(Actor* owner, Actor* wearer)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // LIGHTNINGBOLT: CONSTRUCTOR
-LightningBolt::LightningBolt(int count, bool stackable, const TCODColor& color, float range, float damage) : 
-    Pickable(count, stackable, color), range(range), damage(damage) {}
+LightningBolt::LightningBolt(int count, bool stackable, const TCODColor& color, PickableType type, float range, float damage) : 
+    Pickable(count, stackable, color, type), range(range), damage(damage) {}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -140,8 +142,8 @@ bool LightningBolt::use(Actor* owner, Actor* wearer)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // FIREBALL: CONSTRUCTOR
-FireBall::FireBall(int count, bool stackable, const TCODColor& color, float range, float damage) : 
-    Pickable(count, stackable, color), range(range), damage(damage) {}
+FireBall::FireBall(int count, bool stackable, const TCODColor& color, PickableType type, float range, float damage) : 
+    Pickable(count, stackable, color, type), range(range), damage(damage) {}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -181,8 +183,8 @@ bool FireBall::use(Actor* owner, Actor* wearer)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // CONFUSER:CONSTRUCTOR
-Confuser::Confuser(int count, bool stackable, const TCODColor& color, float range, int numTurns) :
-    Pickable(count, stackable, color), range(range), numTurns(numTurns) {}
+Confuser::Confuser(int count, bool stackable, const TCODColor& color, PickableType type, float range, int numTurns) :
+    Pickable(count, stackable, color, type), range(range), numTurns(numTurns) {}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
