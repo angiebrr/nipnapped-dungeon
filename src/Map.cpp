@@ -16,18 +16,7 @@
 // CONSTRUCTOR
 Map::Map(int width, int height) : width(width), height(height) 
 {
-    tiles = new Tile[width * height];
-    walkMap = new TCODMap(width,height);
-    
-    // Create a binary space partition tree to partition the map.
-    TCODBsp bsp(0, 0, width, height);
-    
-    // Splits the area up recursively into rectangle
-    bsp.splitRecursive(NULL, 8, ROOM_MAX_SIZE, ROOM_MAX_SIZE, 1.5f, 1.5f);
-    
-    // Traverse tree with helper listener class, BspListener.
-    BspListener listener(*this);
-    bsp.traverseInvertedLevelOrder(&listener, NULL);
+    seed = TCODRandom::getInstance()->getInt(0,0x7FFFFFFF);
 }
     
 // DESTRUCTOR
@@ -35,6 +24,25 @@ Map::~Map()
 {
     delete [] tiles;
     delete walkMap;
+}
+
+// INITIALIZATION
+void Map::init(bool withActors)
+{
+    myRand = new TCODRandom(seed, TCOD_RNG_CMWC);
+    
+    tiles = new Tile[width * height];
+    walkMap = new TCODMap(width, height);
+    
+    // Create a binary space partition tree to partition the map.
+    TCODBsp bsp(0, 0, width, height);
+    
+    // Splits the area up recursively into rectangle
+    bsp.splitRecursive(myRand, 8, ROOM_MAX_SIZE, ROOM_MAX_SIZE, 1.5f, 1.5f);
+    
+    // Traverse tree with helper listener class, BspListener.
+    BspListener listener(*this);
+    bsp.traverseInvertedLevelOrder(&listener, (void*)withActors);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,9 +126,13 @@ void Map::dig(int x1, int y1, int x2, int y2)
 // ----------------------------------------------------------------------------------------------------------------------------------
 // Dig out a room and place actors in them.
 // ==================================================================================================================================
-void Map::createRoom(bool first, int x1, int y1, int x2, int y2)
+void Map::createRoom(bool first, int x1, int y1, int x2, int y2, bool withActors)
 {
     dig (x1, y1, x2, y2);
+    
+    // Only generate the map
+    if(!withActors)
+        return;
     
     // If it's the first room, then we want to place the player in the center.
     if (first)

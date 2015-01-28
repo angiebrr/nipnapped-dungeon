@@ -40,12 +40,15 @@ class Engine
  
         Engine(int screenWidth, int screenHeight);
         ~Engine();
+        void init();
         void update();
         void render();
         void sendToFront(Actor* actor);
         Actor* getClosestMonster(int x, int y, float range) const;
         bool pickATile(int* x, int* y, float maxRange = 0.0f);
         Actor* getActor(int x, int y) const;
+        void load();
+        void save();
 };
  
 // INSTANCE: ENGINE CLASS

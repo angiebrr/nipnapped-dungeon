@@ -19,6 +19,21 @@ Engine::Engine(int screenWidth, int screenHeight) :
 {
     TCODConsole::initRoot(screenWidth, screenHeight, "NipNapped Dungeon", false); // x, y, windowTitle, isFullscreen
     
+    // Generate the GUI
+    gui = new GUI();
+}
+
+// DESTRUCTOR
+Engine::~Engine() 
+{
+    actors.clearAndDelete();
+    delete map;
+    delete gui;
+}
+
+// INITIALIZATION
+void Engine::init()
+{
     // Make and add player
     player = new Actor(40, 25, '@', "Lucky", TCODColor::white);
     player->destructible = new PlayerDestructible(100, 2, "Lucky's Corpse");
@@ -29,20 +44,10 @@ Engine::Engine(int screenWidth, int screenHeight) :
     
     // Generate the map
     map = new Map(80, 43);
-    
-    // Generate the GUI
-    gui = new GUI();
-    
+    map->init(true);
+   
     // Add beginning message
     gui->message(TCODColor::red, "May the odds be ever in your favor, Lucky.\n Prepare to perish in the Catacombs of Kitty The Grey.");
-}
-
-// DESTRUCTOR
-Engine::~Engine() 
-{
-    actors.clearAndDelete();
-    delete map;
-    delete gui;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

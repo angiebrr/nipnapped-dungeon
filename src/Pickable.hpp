@@ -19,7 +19,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // CLASS: PICKABLE
-class Pickable 
+class Pickable : IPersistent
 {
     public:
         int count; // Number of pickable items
@@ -30,6 +30,15 @@ class Pickable
         bool pick(Actor* owner, Actor* wearer);
         void drop(Actor* owner, Actor* wearer);
         virtual bool use(Actor* owner, Actor* wearer);
+        static Pickable* create (TCODZip& zip);
+        virtual void load(TCODZip& zip) = 0;
+        virtual void save(TCODZip& zip) = 0;
+        
+    protected:
+        enum PickableType 
+        {
+            HEALER, LIGHTNING_BOLT, CONFUSER, FIREBALL
+        };
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,6 +51,8 @@ class Healer : public Pickable
 
         Healer(int count, bool stackable, const TCODColor& color, float amount);
         bool use(Actor* owner, Actor* wearer);
+        void load(TCODZip& zip);
+        void save(TCODZip& zip);
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,18 +65,22 @@ class LightningBolt: public Pickable
         
         LightningBolt(int count, bool stackable, const TCODColor& color, float range, float damage);
         bool use(Actor* owner, Actor* wearer);
+        void load(TCODZip& zip);
+        void save(TCODZip& zip);
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // CLASS: FIREBALL
-class FireBall: public Pickable 
+class FireBall : public Pickable
 {
     public:
         float range, damage;
         
         FireBall(int count, bool stackable, const TCODColor& color, float range, float damage);
         bool use(Actor* owner, Actor* wearer);
+        void load(TCODZip& zip);
+        void save(TCODZip& zip);
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,6 +94,8 @@ class Confuser: public Pickable
         
         Confuser(int count, bool stackable, const TCODColor& color, float range, int numTurns);
         bool use(Actor* owner, Actor* wearer);
+        void load(TCODZip& zip);
+        void save(TCODZip& zip);
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

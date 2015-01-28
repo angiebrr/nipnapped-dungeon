@@ -1,12 +1,12 @@
-#ifndef ACTOR_HPP
-#define ACTOR_HPP
+#ifndef IPERSISTENT_HPP
+#define	IPERSISTENT_HPP
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ===================================================================================================================================
-// Actor.hpp
+// IPersistent.hpp
 // -----------------------------------------------------------------------------------------------------------------------------------
-// Header for a class that defines an actor's ASCII character along with their background and foreground colors.
+// Interface for game persistence (saving and loading)
 // -----------------------------------------------------------------------------------------------------------------------------------
 // Angela Gross
 // NipNapped Dungeon
@@ -14,29 +14,14 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class Actor : IPersistent
+class IPersistent 
 {
     public:
-        int x, y; // Position on map
-        int code; // ASCII Code
-        TCODColor color; // ASCII Color
-        const char* name; // The actor's name
-        bool blocks; // Can we walk on this actor?
-        Attacker* attacker; // Something that deals damages
-        Destructible* destructible; // Something that can be damaged
-        AI* ai; // Something self-updating
-        Pickable* pickable; // Something that can be picked and used
-        Container* container; // Something that can contain actors
- 
-        Actor(int x, int y, int code, const char* name, const TCODColor& color);
-        ~Actor();
-        void render() const;
-        void update();
-        float getDistance(int cx, int cy) const;
-        void load(TCODZip& zip);
-        void save(TCODZip& zip);
+        virtual void load(TCODZip& zip) = 0;
+        virtual void save(TCODZip& zip) = 0;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif // ACTOR_HPP
+#endif	// IPERSISTENT_HPP
+

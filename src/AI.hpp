@@ -15,10 +15,19 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // CLASS: AI
-class AI 
+class AI : IPersistent
 {
     public:
         virtual void update(Actor* owner) = 0;
+        static AI* create (TCODZip& zip);
+        virtual void load(TCODZip& zip) = 0;
+        virtual void save(TCODZip& zip) = 0;
+        
+    protected:
+        enum AIType 
+        {
+            MONSTER, CONFUSED_MONSTER, PLAYER
+        };
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -31,6 +40,8 @@ class MonsterAI: public AI
         static const int TRACKING_TURNS = 3;
         
         void update(Actor* owner);
+        void load(TCODZip& zip);
+        void save(TCODZip& zip);
 
     protected:
         int moveCount; // Number of turns player has gone out of sight
@@ -45,6 +56,8 @@ class PlayerAI: public AI
 {
     public:
         void update(Actor* owner);
+        void load(TCODZip& zip);
+        void save(TCODZip& zip);
 
     protected:
         bool moveOrAttack(Actor* owner, int targetx, int targety);
@@ -57,12 +70,15 @@ class PlayerAI: public AI
 // CLASS: CONFUSEDMONSTERAI
 class ConfusedMonsterAI : public AI 
 {
-public :
-    ConfusedMonsterAI(int numTurns, AI* oldAi);
-    void update(Actor* owner);
-protected :
-    int numTurns;
-    AI* oldAI;
+    public :
+        ConfusedMonsterAI(int numTurns, AI* oldAI);
+        void update(Actor* owner);
+        void load(TCODZip& zip);
+        void save(TCODZip& zip);
+
+    protected :
+        int numTurns;
+        AI* oldAI;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

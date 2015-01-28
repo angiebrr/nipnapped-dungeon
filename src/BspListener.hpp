@@ -40,19 +40,17 @@ class BspListener : public ITCODBspCallback
             // Only creating rooms with leafs from the tree
             if ( node->isLeaf() ) 
             {    
-                int w, h, x, y;
-                
-                // Get a random number generator
-                TCODRandom* myRand = TCODRandom::getInstance();
+                int w, h, x, y;  
+                bool withActors = (bool)userData;
 
                 // Get a random number for the width, height, x and y coordinates from the divisions made
-                w = myRand->getInt(Map::ROOM_MIN_SIZE, node->w - 2);
-                h = myRand->getInt(Map::ROOM_MIN_SIZE, node->h - 2);
-                x = myRand->getInt(node->x + 1, node->x + node->w - w - 1);
-                y = myRand->getInt(node->y + 1, node->y + node->h - h - 1);
+                w = map.myRand->getInt(Map::ROOM_MIN_SIZE, node->w - 2);
+                h = map.myRand->getInt(Map::ROOM_MIN_SIZE, node->h - 2);
+                x = map.myRand->getInt(node->x + 1, node->x + node->w - w - 1);
+                y = map.myRand->getInt(node->y + 1, node->y + node->h - h - 1);
 
                 // Create the first room for the player to start in
-                map.createRoom(roomNum == 0, x, y, x + w - 1, y + h - 1);
+                map.createRoom(roomNum == 0, x, y, x + w - 1, y + h - 1, withActors);
 
                 // Dig a corridor from the last room (Shouldn't do it for first room.)
                 if (roomNum != 0) 

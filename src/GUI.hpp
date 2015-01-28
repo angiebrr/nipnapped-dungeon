@@ -15,7 +15,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
  // CLASS: GUI
-class GUI 
+class GUI : IPersistent
 {
     public:
         static const int PANEL_HEIGHT = 7;
@@ -31,6 +31,8 @@ class GUI
         void message(const TCODColor& color, const char* text, ...);
         void renderInventory(Actor* owner);
         void clearInventoryConsole();
+        void load(TCODZip& zip);
+        void save(TCODZip& zip);
 
     protected:
         // STRUCT: MESSAGE
