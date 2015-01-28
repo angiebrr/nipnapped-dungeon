@@ -17,12 +17,6 @@
 class GUI : IPersistent
 {
     public:
-        static const int PANEL_HEIGHT = 7;
-        static const int BAR_WIDTH = 20;
-        static const int MSG_X = BAR_WIDTH + 2;
-        static const int MSG_HEIGHT = PANEL_HEIGHT - 1;
-        static const int INVENTORY_WIDTH = 50;
-        static const int INVENTORY_HEIGHT = 28;
         Menu menu;
         
         GUI();

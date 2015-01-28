@@ -22,11 +22,6 @@
 class Pickable : IPersistent
 {
     public:
-        enum PickableType 
-        {
-            HEALER, LIGHTNING_BOLT, CONFUSER, FIREBALL
-        };
-        
         int count; // Number of pickable items
         bool stackable; // Whether or not it can stack
         TCODColor color; // ASCII Color of item
@@ -61,7 +56,7 @@ class Healer : public Pickable
 class LightningBolt: public Pickable 
 {
     public:
-        float range,damage;
+        float range, damage;
         
         LightningBolt(int count, bool stackable, const TCODColor& color, PickableType type, float range, float damage);
         bool use(Actor* owner, Actor* wearer);

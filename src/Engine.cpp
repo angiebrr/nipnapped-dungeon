@@ -1,5 +1,9 @@
 #include "main.hpp"
 
+using namespace GUIConstants;
+using namespace LevelConstants;
+using namespace ActorConstants;
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ===================================================================================================================================
@@ -15,9 +19,9 @@
 
 // CONSTRUCTOR
 Engine::Engine(int screenWidth, int screenHeight) : 
-    screenWidth(screenWidth), screenHeight(screenHeight), fovRadius(10), gameStatus(STARTUP) 
+    screenWidth(screenWidth), screenHeight(screenHeight), fovRadius(FOV_RADIUS), gameStatus(STARTUP) 
 {
-    TCODConsole::initRoot(screenWidth, screenHeight, "NipNapped Dungeon", false); // x, y, windowTitle, isFullscreen
+    TCODConsole::initRoot(screenWidth, screenHeight, WINDOW_TITLE, IS_FULLSCREEN);
     
     // Generate the GUI
     gui = new GUI();
@@ -42,15 +46,15 @@ void Engine::term()
 void Engine::init()
 {
     // Make and add player
-    player = new Actor(40, 25, '@', "Lucky", TCODColor::white);
-    player->destructible = new PlayerDestructible(100, 2, "Lucky's Corpse");
-    player->attacker = new Attacker(10);
+    player = new Actor(PLAYER_DEFAULT_X, PLAYER_DEFAULT_Y, PLAYER_CHAR, PLAYER_NAME, PLAYER_COLOR);
+    player->destructible = new PlayerDestructible(PLAYER_MAX_HEALTH, PLAYER_DEFENSE, PLAYER_CORPSE_NAME);
+    player->attacker = new Attacker(PLAYER_ATTACK);
     player->ai = new PlayerAI();
-    player->container = new Container(26);
+    player->container = new Container(INVENTORY_SIZE);
     actors.push(player);
     
     // Generate the map
-    map = new Map(80, 43);
+    map = new Map(SCREEN_WIDTH, SCREEN_HEIGHT - 7);
     map->init(true);
    
     // Add beginning message and start game.

@@ -17,14 +17,6 @@
 class Menu 
 {
     public:
-        enum MenuItemCode 
-        {
-            NONE, // Close game window
-            NEW_GAME, // Load a new game
-            CONTINUE, // Load a previous game
-            EXIT // Exit game
-        };
-        
         ~Menu();
         void clear();
         void addItem(MenuItemCode code, const char *label);

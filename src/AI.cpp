@@ -1,5 +1,7 @@
 #include "main.hpp"
 
+using namespace ActorConstants;
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ===================================================================================================================================
@@ -112,7 +114,7 @@ void PlayerAI::update(Actor* owner)
     // If we tried to move, then start new turn, move/attack, and recompute FOV.
     if (dx != 0 || dy != 0) 
     {
-        engine.gameStatus = Engine::NEW_TURN;
+        engine.gameStatus = NEW_TURN;
         
         if ( moveOrAttack(owner, owner->x + dx, owner->y + dy) )
             engine.map->computeFov();
@@ -199,7 +201,7 @@ void PlayerAI::handleActionKey(Actor* owner, int code)
                 engine.gui->message(TCODColor::lightGrey, "There's nothing here.");
             
             // Start new turn
-            engine.gameStatus=Engine::NEW_TURN;
+            engine.gameStatus = NEW_TURN;
         }
         break;
         case 'i' : // Display inventory
@@ -211,7 +213,7 @@ void PlayerAI::handleActionKey(Actor* owner, int code)
             if (actor) 
             {
                 actor->pickable->use(actor,owner);
-                engine.gameStatus=Engine::NEW_TURN;
+                engine.gameStatus = NEW_TURN;
             }
         }
         break;
@@ -224,7 +226,7 @@ void PlayerAI::handleActionKey(Actor* owner, int code)
             if (actor) 
             {
                 actor->pickable->drop(actor,owner);
-                engine.gameStatus = Engine::NEW_TURN;
+                engine.gameStatus = NEW_TURN;
             }           
         }
         break;

@@ -1,5 +1,7 @@
 #include "main.hpp"
 
+using namespace GUIConstants;
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ===================================================================================================================================
@@ -16,7 +18,7 @@
 // GUI: CONSTRUCTOR
 GUI::GUI()
 {
-    mainConsole = new TCODConsole(engine.screenWidth, PANEL_HEIGHT);
+    mainConsole = new TCODConsole(SCREEN_WIDTH, PANEL_HEIGHT);
     inventoryConsole = new TCODConsole(INVENTORY_WIDTH, INVENTORY_HEIGHT);
 }
 

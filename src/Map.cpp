@@ -1,5 +1,8 @@
 #include "main.hpp"
 
+using namespace LevelConstants;
+using namespace ActorConstants;
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ===================================================================================================================================
@@ -16,7 +19,7 @@
 // CONSTRUCTOR
 Map::Map(int width, int height) : width(width), height(height) 
 {
-    seed = TCODRandom::getInstance()->getInt(0,0x7FFFFFFF);
+    seed = TCODRandom::getInstance()->getInt(0, 0x7FFFFFFF);
 }
     
 // DESTRUCTOR
@@ -38,7 +41,7 @@ void Map::init(bool withActors)
     TCODBsp bsp(0, 0, width, height);
     
     // Splits the area up recursively into rectangle
-    bsp.splitRecursive(myRand, 8, ROOM_MAX_SIZE, ROOM_MAX_SIZE, 1.5f, 1.5f);
+    bsp.splitRecursive(myRand, RECURSION_DEPTH, ROOM_MAX_SIZE, ROOM_MAX_SIZE, MAX_H_RATIO, MAX_V_RATIO);
     
     // Traverse tree with helper listener class, BspListener.
     BspListener listener(*this);
@@ -54,11 +57,6 @@ void Map::init(bool withActors)
 // ==================================================================================================================================
 void Map::render() const
 {
-    static const TCODColor darkWall(0, 0, 100);
-    static const TCODColor darkGround(50, 50, 150);
-    static const TCODColor lightWall(130, 110, 50);
-    static const TCODColor lightGround(200, 180, 50);
-    
     for (int x = 0; x < width; x++) 
     {
         for (int y = 0; y < height; y++) 
@@ -189,18 +187,18 @@ void Map::addMonster(int x, int y)
     // We create a mouse 80% of the time
     if ( myRand->getInt(0, 100) < 80 ) 
     {
-        Actor* mouse = new Actor(x, y, 'm', "Mouse", TCODColor::desaturatedSky);     
-        mouse->destructible = new MonsterDestructible(10, 0, "Dead Mouse");
-        mouse->attacker = new Attacker(3);
+        Actor* mouse = new Actor(x, y, MOUSE_CHAR, MOUSE_NAME, MOUSE_COLOR);     
+        mouse->destructible = new MonsterDestructible(MOUSE_MAX_HEALTH, MOUSE_DEFENSE, MOUSE_CORPSE_NAME);
+        mouse->attacker = new Attacker(MOUSE_ATTACK);
         mouse->ai = new MonsterAI();
         engine.actors.push(mouse);
     }
     // We create a vacuum 20% of the time
     else
     {
-        Actor* vacuum = new Actor(x, y,'V',"Vacuum", TCODColor::darkerBlue);
-        vacuum->destructible = new MonsterDestructible(16, 1, "Perished Vacuum");
-        vacuum->attacker = new Attacker(4);
+        Actor* vacuum = new Actor(x, y, VACUUM_CHAR, VACUUM_NAME, VACUUM_COLOR);
+        vacuum->destructible = new MonsterDestructible(VACUUM_MAX_HEALTH, VACUUM_DEFENSE, VACUUM_CORPSE_NAME);
+        vacuum->attacker = new Attacker(VACUUM_ATTACK);
         vacuum->ai = new MonsterAI();
         engine.actors.push(vacuum);
     }
@@ -221,33 +219,36 @@ void Map::addItem(int x, int y)
     // Generates health potion 70% of the time
     if (prob < 70) 
     {
-        Actor* healthPotion = new Actor(x, y, '!', "health potion", TCODColor::green);
+        Actor* healthPotion = new Actor(x, y, POTION_CHAR, HEALER_NAME, POTION_COLOR);
         healthPotion->blocks = false;
-        healthPotion->pickable = new Healer(1, true, TCODColor::green, Pickable::HEALER, 4);
+        healthPotion->pickable = new Healer(ONE_ITEM_COUNT, IS_STACKABLE, HEALER_COLOR, HEALER, HEALER_AMOUNT);
         engine.actors.push(healthPotion);
     }
     // Generates scroll of lightning bolt 10% of the time
     else if (prob < 70 + 10) 
     {
-        Actor* scrollOfLightningBolt = new Actor(x,y,'#',"scroll of lightning bolt", TCODColor::lightYellow);
+        Actor* scrollOfLightningBolt = new Actor(x, y, SCROLL_CHAR, LIGHTNING_NAME, SCROLL_COLOR);
         scrollOfLightningBolt->blocks = false;
-        scrollOfLightningBolt->pickable = new LightningBolt(1, true, TCODColor::lightYellow, Pickable::LIGHTNING_BOLT, 5, 20);
+        scrollOfLightningBolt->pickable = 
+                new LightningBolt(ONE_ITEM_COUNT, IS_STACKABLE, LIGHTNING_COLOR, LIGHTNING_BOLT, LIGHTNING_RANGE, LIGHTNING_DAMAGE);
         engine.actors.push(scrollOfLightningBolt);
     }
     // Generates scroll of fireball 10% of the time
     else if(prob < 70 + 10 + 10)
     {
-        Actor* scrollOfFireball = new Actor(x, y, '#', "scroll of fireball", TCODColor::lightYellow);
+        Actor* scrollOfFireball = new Actor(x, y, SCROLL_CHAR, FIREBALL_NAME, SCROLL_COLOR);
         scrollOfFireball->blocks = false;
-        scrollOfFireball->pickable = new FireBall(1, true, TCODColor::lightYellow, Pickable::FIREBALL, 3, 12);
+        scrollOfFireball->pickable = 
+                new FireBall(ONE_ITEM_COUNT, IS_STACKABLE, FIREBALL_COLOR, FIREBALL, FIREBALL_RANGE, FIREBALL_DAMAGE);
         engine.actors.push(scrollOfFireball);
     }
     // Generates scroll of confusion 10% of the time
     else if(prob < 70 + 10 + 10 + 10)
     {
-        Actor* scrollOfConfusion = new Actor(x, y, '#', "scroll of confusion", TCODColor::lightYellow);
+        Actor* scrollOfConfusion = new Actor(x, y, SCROLL_CHAR, CONFUSER_NAME, SCROLL_COLOR);
         scrollOfConfusion->blocks = false;
-        scrollOfConfusion->pickable = new Confuser(1, true, TCODColor::lightYellow, Pickable::CONFUSER, 10, 8);
+        scrollOfConfusion->pickable = 
+                new Confuser(ONE_ITEM_COUNT, IS_STACKABLE, CONFUSER_COLOR, CONFUSER, CONFUSER_RANGE, CONFUSER_NUM_TURNS);
         engine.actors.push(scrollOfConfusion);
     }
 }

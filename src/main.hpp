@@ -20,6 +20,7 @@ class Actor;
 #include <stdio.h>
 #include <stdarg.h>
 #include "libtcod.hpp"
+#include "GameConstants.hpp"
 #include "IPersistent.hpp"
 #include "Destructible.hpp"
 #include "Attacker.hpp"

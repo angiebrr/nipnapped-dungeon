@@ -117,7 +117,7 @@ void PlayerDestructible::die(Actor* owner)
 {
     engine.gui->message(TCODColor::white, "You died!\n");
     Destructible::die(owner);
-    engine.gameStatus = Engine::DEFEAT; 
+    engine.gameStatus = DEFEAT; 
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

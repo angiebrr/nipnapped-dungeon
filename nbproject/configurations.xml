@@ -18,6 +18,7 @@
         <in>Engine.hpp</in>
         <in>GUI.cpp</in>
         <in>GUI.hpp</in>
+        <in>GameConstants.hpp</in>
         <in>IPersistent.cpp</in>
         <in>Map.cpp</in>
         <in>Map.hpp</in>
@@ -92,6 +93,8 @@
       <item path="src/GUI.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/GUI.hpp" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/GameConstants.hpp" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/IPersistent.cpp" ex="false" tool="1" flavor2="0">
       </item>

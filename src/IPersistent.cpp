@@ -26,25 +26,25 @@ void Engine::load()
     engine.gui->menu.clear();
     
     // Add new game menu item
-    engine.gui->menu.addItem(Menu::NEW_GAME,"New game");
+    engine.gui->menu.addItem(NEW_GAME, "New game");
     
     // If the file exists, add continue menu item
     if ( TCODSystem::fileExists("game.sav") )
-        engine.gui->menu.addItem(Menu::CONTINUE, "Continue");
+        engine.gui->menu.addItem(CONTINUE, "Continue");
     
     // Add exit menu item
-    engine.gui->menu.addItem(Menu::EXIT, "Exit");
+    engine.gui->menu.addItem(EXIT, "Exit");
     
     // Wait for the user to choose an item
-    Menu::MenuItemCode menuItem = engine.gui->menu.pick();
+    MenuItemCode menuItem = engine.gui->menu.pick();
     
     // User chose exit or closed windows
-    if ( menuItem == Menu::EXIT || menuItem == Menu::NONE ) 
+    if ( menuItem == EXIT || menuItem == NONE ) 
     {
         exit(0);
     }
     // User chose a new game
-    else if(menuItem == Menu::NEW_GAME)
+    else if(menuItem == NEW_GAME)
     {
         engine.term();
         engine.init();
@@ -81,9 +81,7 @@ void Engine::load()
         
         // Force FOV computation
         gameStatus = STARTUP;
-    } 
-    
-    
+    }    
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------
@@ -553,9 +551,9 @@ AI* AI::create(TCODZip& zip)
     // Create new instance
     switch(type) 
     {
-        case PLAYER : ai = new PlayerAI(); break;
-        case MONSTER : ai = new MonsterAI(); break;
-        case CONFUSED_MONSTER : ai = new ConfusedMonsterAI(0, NULL); break;
+        case PLAYER_AI : ai = new PlayerAI(); break;
+        case MONSTER_AI : ai = new MonsterAI(); break;
+        case CONFUSED_MONSTER_AI : ai = new ConfusedMonsterAI(0, NULL); break;
     }
 
     // Load instance
@@ -577,7 +575,7 @@ void MonsterAI::load(TCODZip& zip)
 // ----------------------------------------------------------------------------------------------------------------------------------
 void MonsterAI::save(TCODZip& zip) 
 {
-    zip.putInt(MONSTER);
+    zip.putInt(MONSTER_AI);
     zip.putInt(moveCount);
 }
 
@@ -595,7 +593,7 @@ void ConfusedMonsterAI::load(TCODZip& zip)
 // ----------------------------------------------------------------------------------------------------------------------------------
 void ConfusedMonsterAI::save(TCODZip& zip) 
 {
-    zip.putInt(CONFUSED_MONSTER);
+    zip.putInt(CONFUSED_MONSTER_AI);
     zip.putInt(numTurns);
     oldAI->save(zip);
 }
@@ -610,7 +608,7 @@ void PlayerAI::load(TCODZip& zip) {}
 // ----------------------------------------------------------------------------------------------------------------------------------
 void PlayerAI::save(TCODZip& zip) 
 {
-    zip.putInt(PLAYER);
+    zip.putInt(PLAYER_AI);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

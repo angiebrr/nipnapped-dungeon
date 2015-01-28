@@ -30,13 +30,7 @@ class Destructible : IPersistent
         virtual void die(Actor* owner);
         void load(TCODZip& zip);
         void save(TCODZip& zip);
-        static Destructible* create(TCODZip &zip);
-        
-    protected:
-        enum DestructibleType 
-        {
-            MONSTER, PLAYER
-        };
+        static Destructible* create(TCODZip& zip);
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

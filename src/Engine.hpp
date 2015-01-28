@@ -17,16 +17,7 @@
  // CLASS: ENGINE
 class Engine 
 {
-    public: 
-        enum GameStatus 
-        {
-            STARTUP, // First frame of the game.
-            IDLE, // No new turn. Redraw the same screen.
-            NEW_TURN, // Update the monster's position.
-            VICTORY, // The player won.
-            DEFEAT // The player was killed.
-         };
-         
+    public:       
         int screenWidth;
         int screenHeight;
         GUI* gui;

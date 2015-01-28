@@ -22,12 +22,6 @@ class AI : IPersistent
         static AI* create (TCODZip& zip);
         virtual void load(TCODZip& zip) = 0;
         virtual void save(TCODZip& zip) = 0;
-        
-    protected:
-        enum AIType 
-        {
-            MONSTER, CONFUSED_MONSTER, PLAYER
-        };
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,9 +30,6 @@ class AI : IPersistent
 class MonsterAI: public AI 
 {
     public:
-        // How many turns the monster chases the player after losing his sight
-        static const int TRACKING_TURNS = 3;
-        
         void update(Actor* owner);
         void load(TCODZip& zip);
         void save(TCODZip& zip);
@@ -70,13 +61,13 @@ class PlayerAI: public AI
 // CLASS: CONFUSEDMONSTERAI
 class ConfusedMonsterAI : public AI 
 {
-    public :
+    public:
         ConfusedMonsterAI(int numTurns, AI* oldAI);
         void update(Actor* owner);
         void load(TCODZip& zip);
         void save(TCODZip& zip);
 
-    protected :
+    protected:
         int numTurns;
         AI* oldAI;
 };
