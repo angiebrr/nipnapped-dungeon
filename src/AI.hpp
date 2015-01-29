@@ -46,7 +46,11 @@ class MonsterAI: public AI
 class PlayerAI: public AI 
 {
     public:
+        int xpLevel;
+        
+        PlayerAI();
         void update(Actor* owner);
+        int getNextLevelXP();
         void load(TCODZip& zip);
         void save(TCODZip& zip);
 

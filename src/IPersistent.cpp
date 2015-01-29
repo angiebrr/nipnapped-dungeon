@@ -66,6 +66,11 @@ void Engine::load()
         player->load(zip);
         actors.push(player);
         
+        // Load the stairs
+        stairs = new Actor(0, 0, 0, NULL, TCODColor::white);
+        stairs->load(zip);
+        actors.push(stairs);
+        
         // Load all the actors
         int numActors = zip.getInt();
         while (numActors > 0) 
@@ -105,11 +110,14 @@ void Engine::save()
         // Save the player
         player->save(zip);
         
-        // Save all the actors
-        zip.putInt(actors.size() - 1);
+        // Save the stairs
+        stairs->save(zip);
+        
+        // Save all the actors (except stairs and player)
+        zip.putInt(actors.size() - 2);
         for (Actor** iterator = actors.begin(); iterator != actors.end(); iterator++) 
         {
-            if (*iterator != player)
+            if (*iterator != player && *iterator != stairs)
                     (*iterator)->save(zip);
         }
         
@@ -310,8 +318,8 @@ Destructible* Destructible::create(TCODZip &zip)
     // Create new instance
     switch(type) 
     {
-        case MONSTER : destructible = new MonsterDestructible(0, 0, NULL); break;
-        case PLAYER : destructible = new PlayerDestructible(0, 0, NULL); break;
+        case MONSTER : destructible = new MonsterDestructible(0, 0, NULL, 0); break;
+        case PLAYER : destructible = new PlayerDestructible(0, 0, NULL, 0); break;
     }
     
     // Load it
@@ -329,6 +337,7 @@ void Destructible::load(TCODZip& zip)
     hp = zip.getFloat();
     defense = zip.getFloat();
     corpseName = strdup(zip.getString());
+    xp = zip.getInt();
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------
@@ -340,6 +349,7 @@ void Destructible::save(TCODZip& zip)
     zip.putFloat(hp);
     zip.putFloat(defense);
     zip.putString(corpseName);
+    zip.putInt(xp);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------
@@ -599,9 +609,12 @@ void ConfusedMonsterAI::save(TCODZip& zip)
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------
-// Load player AI attributes, but there are none.
+// Load player AI attributes.
 // ----------------------------------------------------------------------------------------------------------------------------------
-void PlayerAI::load(TCODZip& zip) {}
+void PlayerAI::load(TCODZip& zip) 
+{
+    xpLevel = zip.getInt();
+}
 
 // ----------------------------------------------------------------------------------------------------------------------------------
 // Save player AI attributes.
@@ -609,6 +622,7 @@ void PlayerAI::load(TCODZip& zip) {}
 void PlayerAI::save(TCODZip& zip) 
 {
     zip.putInt(PLAYER_AI);
+    zip.putInt(xpLevel);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

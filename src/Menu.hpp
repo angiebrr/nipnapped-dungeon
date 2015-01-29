@@ -19,8 +19,8 @@ class Menu
     public:
         ~Menu();
         void clear();
-        void addItem(MenuItemCode code, const char *label);
-        MenuItemCode pick();
+        void addItem(MenuItemCode code, const char* label);
+        MenuItemCode pick(DisplayMode mode = MAIN);
         
     protected:
         struct MenuItem 

@@ -70,6 +70,17 @@ void GUI::render()
     
     // Update mouse hover cells with actors on it
     renderMouseLook();
+    
+    // Display dungeon level
+    mainConsole->setDefaultForeground(TCODColor::white);
+    mainConsole->print(3, 3, "Dungeon level %d", engine.level);
+    
+    // Draw an XP bar
+    PlayerAI* ai = (PlayerAI*)engine.player->ai;
+    char xpTxt[128];
+    sprintf(xpTxt,"XP(%d)", ai->xpLevel);
+    renderBar(1, 5, BAR_WIDTH, xpTxt, engine.player->destructible->xp, ai->getNextLevelXP(), TCODColor::lightViolet, 
+            TCODColor::darkerViolet);
 
     
     // blit the GUI console on the root console

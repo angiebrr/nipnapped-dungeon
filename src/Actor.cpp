@@ -15,7 +15,7 @@
 
 // CONSTRUCTOR
 Actor::Actor(int x, int y, int code, const char* name, const TCODColor& color) : 
-    x(x), y(y), code(code), color(color), name(name), blocks(true), attacker(NULL), destructible(NULL), ai(NULL), pickable(NULL), 
+    x(x), y(y), code(code), color(color), name(name), blocks(true), fovOnly(true), attacker(NULL), destructible(NULL), ai(NULL), pickable(NULL), 
     container(NULL) {}
 
 // DESTRUCTOR

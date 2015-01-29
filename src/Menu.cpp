@@ -1,5 +1,7 @@
 #include "main.hpp"
 
+using namespace GUIConstants;
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ===================================================================================================================================
@@ -45,18 +47,36 @@ void Menu::addItem(MenuItemCode code, const char* label)
 // ----------------------------------------------------------------------------------------------------------------------------------
 // Choose a menu item option.
 // ==================================================================================================================================
-MenuItemCode Menu::pick() 
+MenuItemCode Menu::pick(DisplayMode mode) 
 {
     int selectedItem = 0;
+    int menux, menuy;
     
-    // Load menu image
-    static TCODImage img("menu_background1.png");
+    if (mode == PAUSE) 
+    {
+        // Center pause menu
+        menux = engine.screenWidth/2 - PAUSE_MENU_WIDTH/2;
+        menuy = engine.screenHeight/2 - PAUSE_MENU_HEIGHT/2;
+        
+        // Draw frame
+        TCODConsole::root->setDefaultForeground( TCODColor(200, 180, 50) );
+        TCODConsole::root->printFrame( menux, menuy, PAUSE_MENU_WIDTH, PAUSE_MENU_HEIGHT, true, TCOD_BKGND_ALPHA(70), "menu");
+        
+        // Offset slightly
+        menux += 2;
+        menuy += 3;
+    }
+    else 
+    {
+        static TCODImage img("menu_background1.png");
+        img.blit2x(TCODConsole::root, 0, 0);
+        menux = 10;
+        menuy = TCODConsole::root->getHeight()/3;
+    }
    
     // Start a main loop
     while( !TCODConsole::isWindowClosed() ) 
-    {
-        img.blit2x(TCODConsole::root, 0, 0);
-        
+    {   
         // Light up selected item
         int currentItem = 0;
         for (MenuItem** iterator = items.begin(); iterator!=items.end(); iterator++) 
@@ -66,7 +86,7 @@ MenuItemCode Menu::pick()
             else
                 TCODConsole::root->setDefaultForeground(TCODColor::lightGrey);
 
-            TCODConsole::root->print(10, 10 + currentItem*3, (*iterator)->label);
+            TCODConsole::root->print(menux, menuy + currentItem*3, (*iterator)->label);
             
             currentItem++;
         }

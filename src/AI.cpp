@@ -88,6 +88,11 @@ void MonsterAI::moveOrAttack(Actor* owner, int targetx, int targety)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// PLAYER: CONSTRUCTOR
+PlayerAI::PlayerAI() : xpLevel(1) {}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // ==================================================================================================================================
 // PLAYER: UPDATE()
 // ----------------------------------------------------------------------------------------------------------------------------------
@@ -95,6 +100,38 @@ void MonsterAI::moveOrAttack(Actor* owner, int targetx, int targety)
 // ==================================================================================================================================
 void PlayerAI::update(Actor* owner) 
 {
+    // Level up player if they have gathered enough XP
+    int levelUpXP = getNextLevelXP();
+    if ( owner->destructible->xp >= levelUpXP ) 
+    {
+        xpLevel++;
+        owner->destructible->xp -= levelUpXP;
+        engine.gui->message(TCODColor::yellow, "Your battle skills grow stronger! You reached level %d", xpLevel);
+        
+        // Load menu to level up
+        engine.gui->menu.clear();
+        engine.gui->menu.addItem(CONSTITUTION,"Constitution (+20HP)");
+        engine.gui->menu.addItem(STRENGTH,"Strength (+1 attack)");
+        engine.gui->menu.addItem(AGILITY,"Agility (+1 defense)");
+        MenuItemCode menuItem = engine.gui->menu.pick(PAUSE);
+        
+        // Improve chosen player attribute
+        switch (menuItem) 
+        {
+            case CONSTITUTION:
+                owner->destructible->maxHp += 20;
+                owner->destructible->hp += 20;
+                break;
+            case STRENGTH:
+                owner->attacker->power += 1;
+                break;
+            case AGILITY:
+                owner->destructible->defense += 1;
+                break;
+            default:break;
+        }
+    }
+    
     // Don't do anything if player is dead.
     if ( owner->destructible && owner->destructible->isDead() ) 
         return;
@@ -230,6 +267,14 @@ void PlayerAI::handleActionKey(Actor* owner, int code)
             }           
         }
         break;
+        case '>' : // go down stairs
+        {
+            if ( engine.stairs->x == owner->x && engine.stairs->y == owner->y )
+                engine.nextLevel();
+            else
+                engine.gui->message(TCODColor::lightGrey, "There are no stairs here.");
+        }
+        break;
     }
 }
 
@@ -259,7 +304,17 @@ Actor* PlayerAI::chooseFromInventory(Actor* owner)
     
     // No valid item was selected
     return NULL;
-}   
+}
+
+// ==================================================================================================================================
+// PLAYER: GETNEXTLEVELXP
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Returns the amount of XP for the next level.
+// ==================================================================================================================================
+int PlayerAI::getNextLevelXP()
+{
+    return LEVEL_UP_BASE + xpLevel*LEVEL_UP_FACTOR;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

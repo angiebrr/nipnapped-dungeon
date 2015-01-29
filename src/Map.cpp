@@ -173,6 +173,10 @@ void Map::createRoom(bool first, int x1, int y1, int x2, int y2, bool withActors
             numItems--;
         }
     }
+    
+    // Set stairs position to be in the center of every room until the end
+    engine.stairs->x = (x1 + x2)/2;
+    engine.stairs->y = (y1 + y2)/2;
 }
 
 // ==================================================================================================================================
@@ -188,7 +192,7 @@ void Map::addMonster(int x, int y)
     if ( myRand->getInt(0, 100) < 80 ) 
     {
         Actor* mouse = new Actor(x, y, MOUSE_CHAR, MOUSE_NAME, MOUSE_COLOR);     
-        mouse->destructible = new MonsterDestructible(MOUSE_MAX_HEALTH, MOUSE_DEFENSE, MOUSE_CORPSE_NAME);
+        mouse->destructible = new MonsterDestructible(MOUSE_MAX_HEALTH, MOUSE_DEFENSE, MOUSE_CORPSE_NAME, MOUSE_BASE_XP_DROP);
         mouse->attacker = new Attacker(MOUSE_ATTACK);
         mouse->ai = new MonsterAI();
         engine.actors.push(mouse);
@@ -197,7 +201,7 @@ void Map::addMonster(int x, int y)
     else
     {
         Actor* vacuum = new Actor(x, y, VACUUM_CHAR, VACUUM_NAME, VACUUM_COLOR);
-        vacuum->destructible = new MonsterDestructible(VACUUM_MAX_HEALTH, VACUUM_DEFENSE, VACUUM_CORPSE_NAME);
+        vacuum->destructible = new MonsterDestructible(VACUUM_MAX_HEALTH, VACUUM_DEFENSE, VACUUM_CORPSE_NAME, VACUUM_BASE_XP_DROP);
         vacuum->attacker = new Attacker(VACUUM_ATTACK);
         vacuum->ai = new MonsterAI();
         engine.actors.push(vacuum);

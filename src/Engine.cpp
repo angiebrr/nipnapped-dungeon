@@ -19,7 +19,7 @@ using namespace ActorConstants;
 
 // CONSTRUCTOR
 Engine::Engine(int screenWidth, int screenHeight) : 
-    screenWidth(screenWidth), screenHeight(screenHeight), fovRadius(FOV_RADIUS), gameStatus(STARTUP) 
+    screenWidth(screenWidth), screenHeight(screenHeight), fovRadius(FOV_RADIUS), level(LEVEL_ONE), gameStatus(STARTUP) 
 {
     TCODConsole::initRoot(screenWidth, screenHeight, WINDOW_TITLE, IS_FULLSCREEN);
     
@@ -47,11 +47,17 @@ void Engine::init()
 {
     // Make and add player
     player = new Actor(PLAYER_DEFAULT_X, PLAYER_DEFAULT_Y, PLAYER_CHAR, PLAYER_NAME, PLAYER_COLOR);
-    player->destructible = new PlayerDestructible(PLAYER_MAX_HEALTH, PLAYER_DEFENSE, PLAYER_CORPSE_NAME);
+    player->destructible = new PlayerDestructible(PLAYER_MAX_HEALTH, PLAYER_DEFENSE, PLAYER_CORPSE_NAME, PLAYER_BASE_XP_DROP);
     player->attacker = new Attacker(PLAYER_ATTACK);
     player->ai = new PlayerAI();
     player->container = new Container(INVENTORY_SIZE);
     actors.push(player);
+    
+    // Make and add stairs
+    stairs = new Actor(0, 0, STAIRS_CHAR, STAIRS_NAME, STAIRS_COLOR);
+    stairs->blocks = false;
+    stairs->fovOnly = false;
+    actors.push(stairs);
     
     // Generate the map
     map = new Map(SCREEN_WIDTH, SCREEN_HEIGHT - 7);
@@ -118,7 +124,7 @@ void Engine::render()
     {
         Actor* actor = *iterator;
         
-        if ( (actor != player) && map->isInFov(actor->x, actor->y) ) 
+        if ( (actor != player) && ( (!actor->fovOnly && map->isExplored(actor->x, actor->y) ) || map->isInFov(actor->x, actor->y) ) ) 
             actor->render();
     }
     
@@ -242,6 +248,40 @@ Actor* Engine::getActor(int x, int y) const
     
     // Didn't find actor
     return NULL;
+}
+
+// ==================================================================================================================================
+// NEXTLEVEL()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Proceed to the next level.
+// ==================================================================================================================================
+void Engine::nextLevel()
+{
+    // Increment level
+    level++;
+    
+    // Notify user
+    gui->message(TCODColor::lightViolet, "You take a moment to rest, and recover your strength.");
+    player->destructible->heal(player->destructible->maxHp/2);
+    gui->message(TCODColor::red, "After a rare moment of peace, you descend\ndeeper into the heart of the dungeon...");
+    
+    // Remove the map and all actors except for the stairs and the player
+    delete map;
+    for (Actor** iterator = actors.begin(); iterator != actors.end(); iterator++) 
+    {
+        if (*iterator != player && *iterator != stairs) 
+        {
+            delete *iterator;
+            iterator = actors.remove(iterator);
+        }
+    }
+    
+    // Generate a new map
+    map = new Map(SCREEN_WIDTH, SCREEN_HEIGHT - 7);
+    map->init(true);
+    
+    // Restart the level
+    gameStatus = STARTUP;
 }
         
 

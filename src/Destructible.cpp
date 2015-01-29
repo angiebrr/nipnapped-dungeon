@@ -14,8 +14,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // PARENT: CONSTRUCTOR
-Destructible::Destructible(float maxHp, float defense, const char* corpseName) : 
-    maxHp(maxHp), hp(maxHp), defense(defense), corpseName(corpseName){}
+Destructible::Destructible(float maxHp, float defense, const char* corpseName, int xp) : 
+    maxHp(maxHp), hp(maxHp), defense(defense), corpseName(corpseName), xp(xp) {}
         
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -84,8 +84,8 @@ void Destructible::die(Actor* owner)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // MONSTER: CONSTRUCTOR
-MonsterDestructible::MonsterDestructible(float maxHp, float defense, const char *corpseName) :
-    Destructible(maxHp, defense, corpseName) {}
+MonsterDestructible::MonsterDestructible(float maxHp, float defense, const char* corpseName, int xp) :
+    Destructible(maxHp, defense, corpseName, xp) {}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -96,15 +96,16 @@ MonsterDestructible::MonsterDestructible(float maxHp, float defense, const char 
 // ==================================================================================================================================
 void MonsterDestructible::die(Actor* owner) 
 {
-    engine.gui->message(TCODColor::white, "%s is dead\n", owner->name);
+    engine.gui->message(TCODColor::lightGrey,"%s is dead. You gain %d xp", owner->name, xp);
+    engine.player->destructible->xp += xp;
     Destructible::die(owner);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  
 // PLAYER: CONSTRUCTOR
-PlayerDestructible::PlayerDestructible(float maxHp, float defense, const char *corpseName) :
-    Destructible(maxHp, defense, corpseName) {}
+PlayerDestructible::PlayerDestructible(float maxHp, float defense, const char* corpseName, int xp) :
+    Destructible(maxHp, defense, corpseName, xp) {}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

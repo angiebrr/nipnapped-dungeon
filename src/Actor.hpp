@@ -22,6 +22,7 @@ class Actor : IPersistent
         TCODColor color; // ASCII Color
         const char* name; // The actor's name
         bool blocks; // Can we walk on this actor?
+        bool fovOnly; // Only display when in FOV
         Attacker* attacker; // Something that deals damages
         Destructible* destructible; // Something that can be damaged
         AI* ai; // Something self-updating

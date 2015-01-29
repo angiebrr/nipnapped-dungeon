@@ -22,8 +22,9 @@ class Destructible : IPersistent
         float hp; // Current health points
         float defense; // Hit points deflected
         const char* corpseName; // The actor's name once dead/destroyed
+        int xp; // XP gained by actor that destroys it
         
-        Destructible(float maxHp, float defense, const char* corpseName);
+        Destructible(float maxHp, float defense, const char* corpseName, int xp);
         float takeDamage(Actor* owner, float damage);
         float heal(float amount);
         inline bool isDead(){ return hp <= 0; }
@@ -39,7 +40,7 @@ class Destructible : IPersistent
 class MonsterDestructible: public Destructible
 {
     public:
-        MonsterDestructible(float maxHp, float defense, const char* corpseName);
+        MonsterDestructible(float maxHp, float defense, const char* corpseName, int xp);
         void die(Actor* owner);
         void save(TCODZip& zip);
 };
@@ -50,7 +51,7 @@ class MonsterDestructible: public Destructible
 class PlayerDestructible: public Destructible
 {
     public:
-        PlayerDestructible(float maxHp, float defense, const char* corpseName);
+        PlayerDestructible(float maxHp, float defense, const char* corpseName, int xp);
         void die(Actor* owner);
         void save(TCODZip& zip);
 };
