@@ -2,13 +2,14 @@
 
 using namespace LevelConstants;
 using namespace ActorConstants;
+using namespace GUIConstants;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ===================================================================================================================================
 // Map.hpp
 // -----------------------------------------------------------------------------------------------------------------------------------
-// Class that helps define a given map and its coloring for a level.
+// Class that helps define the map: its coloring, items, and monsters.
 // -----------------------------------------------------------------------------------------------------------------------------------
 // Angela Gross
 // NipNapped Dungeon
@@ -17,9 +18,14 @@ using namespace ActorConstants;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // CONSTRUCTOR
-Map::Map(int width, int height) : width(width), height(height) 
+Map::Map(int width, int height) : width(width), height(height), roomMaxSize(ROOM_MAX_SIZE), roomMinSize(ROOM_MIN_SIZE),
+    minRoomMonsters(0), monstersAdded(0), bossMap(false)
 {
+    // Make random map seed
     seed = TCODRandom::getInstance()->getInt(0, 0x7FFFFFFF);
+    
+    // Get maximum number of monsters (scales with level)
+    maxRoomMonsters = MAX_ROOM_MONSTERS + (engine.level / LAST_LEVEL);
 }
     
 // DESTRUCTOR
@@ -32,6 +38,13 @@ Map::~Map()
 // INITIALIZATION
 void Map::init(bool withActors)
 {
+    // Make sure only one monster is generated
+    if(bossMap)
+    {
+        this->maxRoomMonsters = 1;
+        this->minRoomMonsters = 0;
+    }
+    
     myRand = new TCODRandom(seed, TCOD_RNG_CMWC);
     
     tiles = new Tile[width * height];
@@ -41,7 +54,7 @@ void Map::init(bool withActors)
     TCODBsp bsp(0, 0, width, height);
     
     // Splits the area up recursively into rectangle
-    bsp.splitRecursive(myRand, RECURSION_DEPTH, ROOM_MAX_SIZE, ROOM_MAX_SIZE, MAX_H_RATIO, MAX_V_RATIO);
+    bsp.splitRecursive(myRand, RECURSION_DEPTH, roomMaxSize, roomMaxSize, MAX_H_RATIO, MAX_V_RATIO);
     
     // Traverse tree with helper listener class, BspListener.
     BspListener listener(*this);
@@ -144,7 +157,7 @@ void Map::createRoom(bool first, int x1, int y1, int x2, int y2, bool withActors
         TCODRandom* myRand = TCODRandom::getInstance();
         
         // Generate number of monsters for the room.
-        int numMonsters = myRand->getInt(0, MAX_ROOM_MONSTERS);
+        int numMonsters = myRand->getInt(minRoomMonsters, maxRoomMonsters);
         
         // Add them
         while(numMonsters > 0) 
@@ -152,8 +165,13 @@ void Map::createRoom(bool first, int x1, int y1, int x2, int y2, bool withActors
             int x = myRand->getInt(x1, x2);
             int y = myRand->getInt(y1, y2);
             
+            
             if ( canWalk(x,y) )
-                addMonster(x,y);
+            {
+                // We only want to add one monster if it's a boss map
+                if( (bossMap && monstersAdded == 0) || !bossMap)
+                    addMonster(x, y);
+            }
             
             numMonsters--;  
         }
@@ -186,25 +204,69 @@ void Map::createRoom(bool first, int x1, int y1, int x2, int y2, bool withActors
 // ==================================================================================================================================
 void Map::addMonster(int x, int y) 
 {
-    TCODRandom* myRand = TCODRandom::getInstance();
+    // Add another monster
+    monstersAdded++;
     
-    // We create a mouse 80% of the time
-    if ( myRand->getInt(0, 100) < 80 ) 
+    // Generator random slot
+    TCODRandom* myRand = TCODRandom::getInstance();
+    int prob = myRand->getInt(0, NUM_MONSTER_SLOTS - 1);
+    
+    // Get it from monster slot array (0-index)
+    MonsterType monster = (MonsterType)LEVEL_MONSTERS[engine.level - 1][prob];
+    
+    // Create monster from what was retrieved
+    switch(monster)
     {
-        Actor* mouse = new Actor(x, y, MOUSE_CHAR, MOUSE_NAME, MOUSE_COLOR);     
-        mouse->destructible = new MonsterDestructible(MOUSE_MAX_HEALTH, MOUSE_DEFENSE, MOUSE_CORPSE_NAME, MOUSE_BASE_XP_DROP);
-        mouse->attacker = new Attacker(MOUSE_ATTACK);
-        mouse->ai = new MonsterAI();
-        engine.actors.push(mouse);
-    }
-    // We create a vacuum 20% of the time
-    else
-    {
-        Actor* vacuum = new Actor(x, y, VACUUM_CHAR, VACUUM_NAME, VACUUM_COLOR);
-        vacuum->destructible = new MonsterDestructible(VACUUM_MAX_HEALTH, VACUUM_DEFENSE, VACUUM_CORPSE_NAME, VACUUM_BASE_XP_DROP);
-        vacuum->attacker = new Attacker(VACUUM_ATTACK);
-        vacuum->ai = new MonsterAI();
-        engine.actors.push(vacuum);
+        case MOUSE:
+        {
+            Actor* mouse = new Actor(x, y, MOUSE_CHAR, MOUSE_NAME, MOUSE_COLOR);     
+            mouse->destructible = new MonsterDestructible(MOUSE_MAX_HEALTH, MOUSE_DEFENSE, MOUSE_CORPSE_NAME, MOUSE_BASE_XP_DROP, !IS_BOSS);
+            mouse->attacker = new Attacker(MOUSE_ATTACK);
+            mouse->ai = new MonsterAI();
+            engine.actors.push(mouse); 
+        }
+        break;
+        case PUPPY:
+        {
+            Actor* puppy = new Actor(x, y, PUPPY_CHAR, PUPPY_NAME, PUPPY_COLOR);     
+            puppy->destructible = 
+                    new MonsterDestructible(PUPPY_MAX_HEALTH, PUPPY_DEFENSE, PUPPY_CORPSE_NAME, PUPPY_BASE_XP_DROP, !IS_BOSS);
+            puppy->attacker = new Attacker(PUPPY_ATTACK);
+            puppy->ai = new MonsterAI();
+            engine.actors.push(puppy); 
+        }
+        break;
+        case DOG:
+        {
+            Actor* dog = new Actor(x, y, DOG_CHAR, DOG_NAME, DOG_COLOR);     
+            dog->destructible = new MonsterDestructible(DOG_MAX_HEALTH, DOG_DEFENSE, DOG_CORPSE_NAME, DOG_BASE_XP_DROP, !IS_BOSS);
+            dog->attacker = new Attacker(DOG_ATTACK);
+            dog->ai = new MonsterAI();
+            engine.actors.push(dog); 
+        }
+        break;
+        case VACUUM:
+        {
+            Actor* vacuum = new Actor(x, y, VACUUM_CHAR, VACUUM_NAME, VACUUM_COLOR);
+            vacuum->destructible = 
+                    new MonsterDestructible(VACUUM_MAX_HEALTH, VACUUM_DEFENSE, VACUUM_CORPSE_NAME, VACUUM_BASE_XP_DROP, !IS_BOSS);
+            vacuum->attacker = new Attacker(VACUUM_ATTACK);
+            vacuum->ai = new MonsterAI();
+            engine.actors.push(vacuum);
+        }
+        break;
+        case KITTY_THE_GRAY:
+        {
+            Actor* kittyTheGray = new Actor(x, y, KITTY_THE_GRAY_CHAR, KITTY_THE_GRAY_NAME, KITTY_THE_GRAY_COLOR);     
+            kittyTheGray->destructible = 
+                    new MonsterDestructible(KITTY_THE_GRAY_MAX_HEALTH, KITTY_THE_GRAY_DEFENSE, KITTY_THE_GRAY_CORPSE_NAME, 
+                    KITTY_THE_GRAY_BASE_XP_DROP, IS_BOSS);
+            kittyTheGray->attacker = new Attacker(KITTY_THE_GRAY_ATTACK);
+            kittyTheGray->ai = new MonsterAI();
+            engine.actors.push(kittyTheGray); 
+        }
+        break;
+        default: break;
     }
 }
 

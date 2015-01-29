@@ -18,8 +18,8 @@ using namespace ActorConstants;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // CONSTRUCTOR
-Engine::Engine(int screenWidth, int screenHeight) : 
-    screenWidth(screenWidth), screenHeight(screenHeight), fovRadius(FOV_RADIUS), level(LEVEL_ONE), gameStatus(STARTUP) 
+Engine::Engine(int screenWidth, int screenHeight) : screenWidth(screenWidth), screenHeight(screenHeight), fovRadius(FOV_RADIUS), 
+        level(FIRST_LEVEL), gameStatus(STARTUP) 
 {
     TCODConsole::initRoot(screenWidth, screenHeight, WINDOW_TITLE, IS_FULLSCREEN);
     
@@ -47,7 +47,7 @@ void Engine::init()
 {
     // Make and add player
     player = new Actor(PLAYER_DEFAULT_X, PLAYER_DEFAULT_Y, PLAYER_CHAR, PLAYER_NAME, PLAYER_COLOR);
-    player->destructible = new PlayerDestructible(PLAYER_MAX_HEALTH, PLAYER_DEFENSE, PLAYER_CORPSE_NAME, PLAYER_BASE_XP_DROP);
+    player->destructible = new PlayerDestructible(PLAYER_MAX_HEALTH, PLAYER_DEFENSE, PLAYER_CORPSE_NAME, PLAYER_BASE_XP_DROP, !IS_BOSS);
     player->attacker = new Attacker(PLAYER_ATTACK);
     player->ai = new PlayerAI();
     player->container = new Container(INVENTORY_SIZE);
@@ -60,11 +60,11 @@ void Engine::init()
     actors.push(stairs);
     
     // Generate the map
-    map = new Map(SCREEN_WIDTH, SCREEN_HEIGHT - 7);
+    map = new Map(SCREEN_WIDTH, SCREEN_HEIGHT - PANEL_HEIGHT);
     map->init(true);
    
     // Add beginning message and start game.
-    gui->message(TCODColor::red, "May the odds be ever in your favor, Lucky.\n Prepare to perish in the Catacombs of Kitty The Grey.");   
+    gui->message(TCODColor::crimson, "Prepare to perish in the Catacombs of Kitty The Gray.");   
     gameStatus = STARTUP;
 }
 
@@ -96,7 +96,7 @@ void Engine::update()
     player->update();
     
     // Loop through all the actors and update (except the player)
-    if ( gameStatus == NEW_TURN ) 
+    if (gameStatus == NEW_TURN) 
     {
         for (Actor** iterator = actors.begin(); iterator != actors.end(); iterator++) 
         {
@@ -257,13 +257,21 @@ Actor* Engine::getActor(int x, int y) const
 // ==================================================================================================================================
 void Engine::nextLevel()
 {
-    // Increment level
+    // Increase level
     level++;
     
+    // Is it the final boss?
+    bool finalBoss = level % LAST_LEVEL == 0;
+    
     // Notify user
-    gui->message(TCODColor::lightViolet, "You take a moment to rest, and recover your strength.");
+    gui->message(TCODColor::lightViolet, "You take a moment to lick your wounds and take a cat nap.");
     player->destructible->heal(player->destructible->maxHp/2);
-    gui->message(TCODColor::red, "After a rare moment of peace, you descend\ndeeper into the heart of the dungeon...");
+    
+    // Add another message to notify user of level
+    if(finalBoss)
+        gui->message(TCODColor::red, "You get a feeling that Kitty The Gray is lurking \n around this dungeon. Be prepared.");
+    else
+        gui->message(TCODColor::red, "After that nice rest, you descend and continue, \n so you can get your cat nip at last...");
     
     // Remove the map and all actors except for the stairs and the player
     delete map;
@@ -278,6 +286,12 @@ void Engine::nextLevel()
     
     // Generate a new map
     map = new Map(SCREEN_WIDTH, SCREEN_HEIGHT - 7);
+    
+    // Only the main boss
+    if(finalBoss)
+        map->bossMap = true;
+
+    // Initialize and create map
     map->init(true);
     
     // Restart the level

@@ -30,6 +30,10 @@ class Map : IPersistent
 {
     public:
         int width, height;
+        int roomMaxSize, roomMinSize;
+        int maxRoomMonsters, minRoomMonsters;
+        int monstersAdded;
+        bool bossMap;
 
         Map(int width, int height);
         ~Map();

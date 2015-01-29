@@ -46,12 +46,24 @@ enum DisplayMode
 
 enum LevelCode
 {
-    LEVEL_ONE, LEVEL_TWO, LEVEL_THREE, LEVEL_FOUR, LEVEL_FIVE
+    LEVEL_ONE = 1, 
+    LEVEL_TWO = 2, 
+    LEVEL_THREE = 3, 
+    LEVEL_FOUR = 4, 
+    LEVEL_FIVE = 5,
+    FIRST_LEVEL = LEVEL_ONE,
+    LAST_LEVEL = LEVEL_FIVE
 };
 
 enum MonsterType
 {
-    MOUSE, PUPPY, DOG, VACUUM, KITTY_THE_GRAY
+    MOUSE, 
+    PUPPY, 
+    DOG, 
+    VACUUM, 
+    KITTY_THE_GRAY,
+    FIRST_MONSTER = MOUSE,
+    LAST_MONSTER = KITTY_THE_GRAY
 };
 
 enum AIType 
@@ -126,15 +138,22 @@ namespace LevelConstants
 
 namespace ActorConstants
 {
+    // Slots for each monster
+    static const int NUM_MONSTER_SLOTS = 5;
+    
     // Types of monsters that will spawn in each level
     // 5th level will be boss battle with KITTY
-    static const int LEVEL_MONSTERS[4][5] =
+    static const int LEVEL_MONSTERS[LAST_LEVEL][NUM_MONSTER_SLOTS] =
     { 
         { MOUSE, MOUSE, MOUSE, MOUSE, MOUSE },
         { MOUSE, MOUSE, PUPPY, PUPPY, PUPPY },
         { MOUSE, MOUSE, PUPPY, PUPPY, DOG },
-        { MOUSE, PUPPY, DOG, DOG, VACUUM }
+        { MOUSE, PUPPY, DOG, DOG, VACUUM },
+        { KITTY_THE_GRAY, KITTY_THE_GRAY, KITTY_THE_GRAY, KITTY_THE_GRAY, KITTY_THE_GRAY }
     };
+    
+    // Bool for boss
+    static const bool IS_BOSS = true;
     
     // Experience-related constants
     static const int LEVEL_UP_BASE = 200;
@@ -145,16 +164,16 @@ namespace ActorConstants
     static const int PLAYER_DEFAULT_Y = 25;
     static const char* PLAYER_NAME = "Lucky";
     static const char* PLAYER_CORPSE_NAME = "Lucky's corpse";
-    static const float PLAYER_MAX_HEALTH = 50;
-    static const float PLAYER_DEFENSE = 2;
-    static const float PLAYER_ATTACK = 5;
+    static const float PLAYER_MAX_HEALTH = 30;
+    static const float PLAYER_DEFENSE = 0;
+    static const float PLAYER_ATTACK = 4;
     static const char PLAYER_CHAR = '@';
     static const TCODColor PLAYER_COLOR = TCODColor::white;
     static const int PLAYER_BASE_XP_DROP = 0;
 
     // Mouse atrributes
-    static const char* MOUSE_NAME = "Infected Mouse";
-    static const char* MOUSE_CORPSE_NAME = "Perished Mouse";
+    static const char* MOUSE_NAME = "infected mouse";
+    static const char* MOUSE_CORPSE_NAME = "perished mouse";
     static const float MOUSE_MAX_HEALTH = 5;
     static const float MOUSE_DEFENSE = 0;
     static const float MOUSE_ATTACK = 1;
@@ -163,8 +182,8 @@ namespace ActorConstants
     static const int MOUSE_BASE_XP_DROP = 50;
 
     // Puppy attributes
-    static const char* PUPPY_NAME = "Evil Puppy";
-    static const char* PUPPY_CORPSE_NAME = "Dead Puppy";
+    static const char* PUPPY_NAME = "evil puppy";
+    static const char* PUPPY_CORPSE_NAME = "dead puppy";
     static const float PUPPY_MAX_HEALTH = 7;
     static const float PUPPY_DEFENSE = 0;
     static const float PUPPY_ATTACK = 1;
@@ -173,8 +192,8 @@ namespace ActorConstants
     static const int PUPPY_BASE_XP_DROP = 75;
 
     // Dog attributes
-    static const char* DOG_NAME = "Rabid Dog";
-    static const char* DOG_CORPSE_NAME = "Slain Dog";
+    static const char* DOG_NAME = "rabid dog";
+    static const char* DOG_CORPSE_NAME = "slain dog";
     static const float DOG_MAX_HEALTH = 10;
     static const float DOG_DEFENSE = 1;
     static const float DOG_ATTACK = 3;
@@ -183,8 +202,8 @@ namespace ActorConstants
     static const int DOG_BASE_XP_DROP = 95;
 
     // Vacuum attributes
-    static const char* VACUUM_NAME = "Vicious Vacuum";
-    static const char* VACUUM_CORPSE_NAME = "Dead Vacuum";
+    static const char* VACUUM_NAME = "vicious vacuum";
+    static const char* VACUUM_CORPSE_NAME = "dead vacuum";
     static const float VACUUM_MAX_HEALTH = 15;
     static const float VACUUM_DEFENSE = 2;
     static const float VACUUM_ATTACK = 4;
@@ -194,10 +213,10 @@ namespace ActorConstants
 
     // Kitty the gray attributes
     static const char* KITTY_THE_GRAY_NAME = "Kitty The Gray";
-    static const char* KITTY_THE_GRAY_CORPSE_NAME = "Dead as door nails Kitty The Gray.";
-    static const float KITTY_THE_GRAY_HEALTH = 75;
+    static const char* KITTY_THE_GRAY_CORPSE_NAME = "dead as door nails Kitty The Gray";
+    static const float KITTY_THE_GRAY_MAX_HEALTH = 75;
     static const float KITTY_THE_GRAY_DEFENSE = 3;
-    static const float KITTY_THE_GRAY_ATTACK = 8;
+    static const float KITTY_THE_GRAY_ATTACK = 6;
     static const char KITTY_THE_GRAY_CHAR = 'K';
     static const TCODColor KITTY_THE_GRAY_COLOR = TCODColor::crimson;
     static const int KITTY_THE_GRAY_BASE_XP_DROP = 500;
@@ -211,10 +230,10 @@ namespace ActorConstants
     static const TCODColor STAIRS_COLOR = TCODColor::white;
 
     // Names for items
-    static const char* HEALER_NAME = "health potion";
-    static const char* LIGHTNING_NAME = "scroll of lightning bolt";
-    static const char* FIREBALL_NAME = "scroll of fireball";
-    static const char* CONFUSER_NAME = "scroll of confusion";
+    static const char* HEALER_NAME = "catnip juice";
+    static const char* LIGHTNING_NAME = "scroll of lightning claws";
+    static const char* FIREBALL_NAME = "scroll of fire hairball";
+    static const char* CONFUSER_NAME = "scroll of confused cats";
     static const char* STAIRS_NAME = "stairs";
 
     // Colors for items in inventory
@@ -240,15 +259,8 @@ namespace ActorConstants
     static const int TRACKING_TURNS = 3;
 
     // Player inventory size
-    static const int INVENTORY_SIZE = 26;
+    static const int INVENTORY_SIZE = 13;
 }
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// ==================================================================================================================================
-// MISC CONSTANTS
-// ==================================================================================================================================
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -46,8 +46,8 @@ class BspListener : public ITCODBspCallback
                 bool withActors = (bool)userData;
 
                 // Get a random number for the width, height, x and y coordinates from the divisions made
-                w = map.myRand->getInt(ROOM_MIN_SIZE, node->w - 2);
-                h = map.myRand->getInt(ROOM_MIN_SIZE, node->h - 2);
+                w = map.myRand->getInt(map.roomMinSize, node->w - 2);
+                h = map.myRand->getInt(map.roomMinSize, node->h - 2);
                 x = map.myRand->getInt(node->x + 1, node->x + node->w - w - 1);
                 y = map.myRand->getInt(node->y + 1, node->y + node->h - h - 1);
 

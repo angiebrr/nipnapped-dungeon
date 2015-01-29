@@ -318,8 +318,8 @@ Destructible* Destructible::create(TCODZip &zip)
     // Create new instance
     switch(type) 
     {
-        case MONSTER : destructible = new MonsterDestructible(0, 0, NULL, 0); break;
-        case PLAYER : destructible = new PlayerDestructible(0, 0, NULL, 0); break;
+        case MONSTER : destructible = new MonsterDestructible(0, 0, NULL, 0, false); break;
+        case PLAYER : destructible = new PlayerDestructible(0, 0, NULL, 0, false); break;
     }
     
     // Load it
@@ -338,6 +338,7 @@ void Destructible::load(TCODZip& zip)
     defense = zip.getFloat();
     corpseName = strdup(zip.getString());
     xp = zip.getInt();
+    isBoss = zip.getInt();
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------
@@ -350,6 +351,7 @@ void Destructible::save(TCODZip& zip)
     zip.putFloat(defense);
     zip.putString(corpseName);
     zip.putInt(xp);
+    zip.putInt(isBoss);
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------

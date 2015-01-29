@@ -73,7 +73,11 @@ void GUI::render()
     
     // Display dungeon level
     mainConsole->setDefaultForeground(TCODColor::white);
-    mainConsole->print(3, 3, "Dungeon level %d", engine.level);
+    mainConsole->print(3, 3, "Dungeon Level %d", engine.level);
+    
+    // Display controls
+    //mainConsole->setDefaultForeground(TCODColor::grey);
+    //mainConsole->print(0, 0, "[i] inv    [g] pick up    [d] drop    [>] descend    [esc] pause");
     
     // Draw an XP bar
     PlayerAI* ai = (PlayerAI*)engine.player->ai;
@@ -157,7 +161,7 @@ void GUI::renderInventory(Actor* owner)
         inventoryConsole->print(4, y, "(%c) %-s [%003i]", shortcut, actor->name, actor->pickable->count);
         
         // Update y and shortcut letter
-        y++;
+        y += 2;
         shortcut++;
     }
     

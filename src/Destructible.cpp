@@ -14,8 +14,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // PARENT: CONSTRUCTOR
-Destructible::Destructible(float maxHp, float defense, const char* corpseName, int xp) : 
-    maxHp(maxHp), hp(maxHp), defense(defense), corpseName(corpseName), xp(xp) {}
+Destructible::Destructible(float maxHp, float defense, const char* corpseName, int xp, bool isBoss) : 
+    maxHp(maxHp), hp(maxHp), defense(defense), corpseName(corpseName), xp(xp), isBoss(isBoss) {}
         
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -84,8 +84,8 @@ void Destructible::die(Actor* owner)
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // MONSTER: CONSTRUCTOR
-MonsterDestructible::MonsterDestructible(float maxHp, float defense, const char* corpseName, int xp) :
-    Destructible(maxHp, defense, corpseName, xp) {}
+MonsterDestructible::MonsterDestructible(float maxHp, float defense, const char* corpseName, int xp, bool isBoss) :
+    Destructible(maxHp, defense, corpseName, xp, isBoss) {}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -96,16 +96,22 @@ MonsterDestructible::MonsterDestructible(float maxHp, float defense, const char*
 // ==================================================================================================================================
 void MonsterDestructible::die(Actor* owner) 
 {
-    engine.gui->message(TCODColor::lightGrey,"%s is dead. You gain %d xp", owner->name, xp);
+    engine.gui->message(TCODColor::lightGrey, "%s is dead. You gain %d xp", owner->name, xp);
     engine.player->destructible->xp += xp;
+    
+    // Notify user of success if they got the boss
+    if(isBoss)
+        engine.gui->message(TCODColor::green, 
+                "You have defeated %s! This catacomb is \n abandoned, but your quest is far from over...", owner->name);
+    
     Destructible::die(owner);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
  
 // PLAYER: CONSTRUCTOR
-PlayerDestructible::PlayerDestructible(float maxHp, float defense, const char* corpseName, int xp) :
-    Destructible(maxHp, defense, corpseName, xp) {}
+PlayerDestructible::PlayerDestructible(float maxHp, float defense, const char* corpseName, int xp, bool isBoss) :
+    Destructible(maxHp, defense, corpseName, xp, isBoss) {}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
