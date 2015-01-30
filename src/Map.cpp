@@ -1,9 +1,5 @@
 #include "main.hpp"
 
-using namespace LevelConstants;
-using namespace ActorConstants;
-using namespace GUIConstants;
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ===================================================================================================================================
@@ -24,8 +20,11 @@ Map::Map(int width, int height) : width(width), height(height), roomMaxSize(ROOM
     // Make random map seed
     seed = TCODRandom::getInstance()->getInt(0, 0x7FFFFFFF);
     
+    // Increase number of monsters spawned
+    float numMonsters = ceil((float)engine.level / (float)LAST_LEVEL);
+    
     // Get maximum number of monsters (scales with level)
-    maxRoomMonsters = MAX_ROOM_MONSTERS + (engine.level / LAST_LEVEL);
+    maxRoomMonsters = MAX_ROOM_MONSTERS + (numMonsters);
 }
     
 // DESTRUCTOR
@@ -212,7 +211,7 @@ void Map::addMonster(int x, int y)
     int prob = myRand->getInt(0, NUM_MONSTER_SLOTS - 1);
     
     // Get it from monster slot array (0-index)
-    MonsterType monster = (MonsterType)LEVEL_MONSTERS[engine.level - 1][prob];
+    MonsterType monster = LEVEL_MONSTERS[engine.levelType - 1][prob];
     
     // Create monster from what was retrieved
     switch(monster)

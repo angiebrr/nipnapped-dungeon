@@ -17,7 +17,7 @@
  // CLASS: ENGINE
 class Engine 
 {
-    public:       
+    public:    
         int screenWidth;
         int screenHeight;
         GUI* gui;
@@ -27,6 +27,7 @@ class Engine
         Actor* stairs;
         int fovRadius;
         int level;
+        LevelCode levelType;
         GameStatus gameStatus;
         TCOD_key_t lastKey;
         TCOD_mouse_t mouse;
@@ -42,6 +43,7 @@ class Engine
         bool pickATile(int* x, int* y, float maxRange = 0.0f);
         Actor* getActor(int x, int y) const;
         void nextLevel();
+        void levelUpMonsters();
         void load();
         void save();
 };

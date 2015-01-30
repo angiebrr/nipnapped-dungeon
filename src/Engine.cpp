@@ -1,9 +1,5 @@
 #include "main.hpp"
 
-using namespace GUIConstants;
-using namespace LevelConstants;
-using namespace ActorConstants;
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // ===================================================================================================================================
@@ -23,6 +19,12 @@ Engine::Engine(int screenWidth, int screenHeight) : screenWidth(screenWidth), sc
 {
     TCODConsole::initRoot(screenWidth, screenHeight, WINDOW_TITLE, IS_FULLSCREEN);
     
+    // Get level
+    if(level % LAST_LEVEL != 0)
+        levelType = (LevelCode)(level % LAST_LEVEL);
+    else
+        levelType = LAST_LEVEL;
+    
     // Generate the GUI
     gui = new GUI();
 }
@@ -40,6 +42,7 @@ void Engine::term()
     actors.clearAndDelete();
     if (map) delete map;
     gui->clear();
+    level = FIRST_LEVEL; // reset level
 }
 
 // INITIALIZATION
@@ -65,6 +68,7 @@ void Engine::init()
    
     // Add beginning message and start game.
     gui->message(TCODColor::crimson, "Prepare to perish in the Catacombs of Kitty The Gray.");   
+    gui->clearInventoryConsole();
     gameStatus = STARTUP;
 }
 
@@ -260,8 +264,17 @@ void Engine::nextLevel()
     // Increase level
     level++;
     
+    // Get level type
+    if(level % LAST_LEVEL != 0)
+        levelType = (LevelCode)(level % LAST_LEVEL);
+    else
+        levelType = LAST_LEVEL;
+    
+    // Monsters scale with every <LAST_LEVEL> levels
+    engine.levelUpMonsters();
+    
     // Is it the final boss?
-    bool finalBoss = level % LAST_LEVEL == 0;
+    bool finalBoss = (level % LAST_LEVEL == 0);
     
     // Notify user
     gui->message(TCODColor::lightViolet, "You take a moment to lick your wounds and take a cat nap.");
@@ -296,6 +309,67 @@ void Engine::nextLevel()
     
     // Restart the level
     gameStatus = STARTUP;
+}
+
+// ==================================================================================================================================
+// LEVELUPMONSTERS()
+// ----------------------------------------------------------------------------------------------------------------------------------
+// Make monsters more difficult to kill as the levels go on
+// ==================================================================================================================================
+void Engine::levelUpMonsters()
+{
+    // So we can still have the same monsters if we reload the game
+    int scale = level / LAST_LEVEL;
+    
+    // Don't need to change anything
+    if(scale == 0)
+        return;
+    
+    for(int i = 0; i <= LAST_MONSTER; i++)
+    {
+        MonsterType monster = (MonsterType)i;
+        
+        // Increase attributes of monsters
+        switch(monster)
+        {
+            case MOUSE:
+            {
+                MOUSE_MAX_HEALTH = scale * LEVEL_UP_MONSTERS[i][HEALTH];
+                MOUSE_ATTACK = scale * LEVEL_UP_MONSTERS[i][ATTACK];
+                MOUSE_DEFENSE = scale * LEVEL_UP_MONSTERS[i][DEFENSE];  
+            }
+            break;
+            case PUPPY:
+            {
+                PUPPY_MAX_HEALTH = scale * LEVEL_UP_MONSTERS[i][HEALTH];
+                PUPPY_ATTACK = scale * LEVEL_UP_MONSTERS[i][ATTACK];
+                PUPPY_DEFENSE = scale * LEVEL_UP_MONSTERS[i][DEFENSE];
+            }
+            break;
+            case DOG:
+            {
+                DOG_MAX_HEALTH = scale * LEVEL_UP_MONSTERS[i][HEALTH];
+                DOG_ATTACK =  scale * LEVEL_UP_MONSTERS[i][ATTACK];
+                DOG_DEFENSE = scale * LEVEL_UP_MONSTERS[i][DEFENSE];
+            }
+            break;
+            case VACUUM:
+            {
+                VACUUM_MAX_HEALTH = scale * LEVEL_UP_MONSTERS[i][HEALTH];
+                VACUUM_ATTACK =  scale * LEVEL_UP_MONSTERS[i][ATTACK];
+                VACUUM_DEFENSE = scale * LEVEL_UP_MONSTERS[i][DEFENSE]; 
+            }
+            break;
+            case KITTY_THE_GRAY:
+            {
+                KITTY_THE_GRAY_MAX_HEALTH = scale * LEVEL_UP_MONSTERS[i][HEALTH];
+                KITTY_THE_GRAY_ATTACK =  scale * LEVEL_UP_MONSTERS[i][ATTACK];
+                KITTY_THE_GRAY_DEFENSE = scale * LEVEL_UP_MONSTERS[i][DEFENSE];
+            }
+            break;
+            default: break;
+        }
+    }
 }
         
 

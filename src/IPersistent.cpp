@@ -55,6 +55,12 @@ void Engine::load()
         engine.term();
         zip.loadFromFile("game.sav");
         
+        // Load level
+        level = zip.getInt();
+        
+        // Update monster levels
+        engine.levelUpMonsters();
+        
         // Load the map
         int width = zip.getInt();
         int height = zip.getInt();
@@ -101,6 +107,9 @@ void Engine::save()
     else 
     {
         TCODZip zip;
+        
+        // Save the level
+        zip.putInt(level);
         
         // Save the map
         zip.putInt(map->width);

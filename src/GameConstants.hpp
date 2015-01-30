@@ -55,6 +55,13 @@ enum LevelCode
     LAST_LEVEL = LEVEL_FIVE
 };
 
+enum AttributeType
+{
+    HEALTH,
+    ATTACK,
+    DEFENSE
+};
+
 enum MonsterType
 {
     MOUSE, 
@@ -86,22 +93,19 @@ enum PickableType
 // ==================================================================================================================================
 // GUI CONSTANTS
 // ==================================================================================================================================
-namespace GUIConstants
-{
-    static const int PANEL_HEIGHT = 7;
-    static const int BAR_WIDTH = 20;
-    static const int MSG_X = BAR_WIDTH + 2;
-    static const int MSG_HEIGHT = PANEL_HEIGHT - 1;
-    static const int INVENTORY_WIDTH = 50;
-    static const int INVENTORY_HEIGHT = 28;
-    static const int PAUSE_MENU_WIDTH = 30;
-    static const int PAUSE_MENU_HEIGHT = 15;
+extern const int PANEL_HEIGHT;
+extern const int BAR_WIDTH;
+extern const int MSG_X;
+extern const int MSG_HEIGHT;
+extern const int INVENTORY_WIDTH;
+extern const int INVENTORY_HEIGHT;
+extern const int PAUSE_MENU_WIDTH;
+extern const int PAUSE_MENU_HEIGHT;
 
-    static int SCREEN_WIDTH = 80;
-    static int SCREEN_HEIGHT = 50;
-    static bool IS_FULLSCREEN = false;
-    static const char* WINDOW_TITLE = "NipNapped Dungeon";
-}
+extern int SCREEN_WIDTH;
+extern int SCREEN_HEIGHT;
+extern bool IS_FULLSCREEN;
+extern const char* WINDOW_TITLE;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -109,26 +113,23 @@ namespace GUIConstants
 // LEVEL CONSTANTS
 // ==================================================================================================================================
 
-namespace LevelConstants
-{
-    // Map colors
-    static const TCODColor darkWall(0, 0, 100);
-    static const TCODColor darkGround(50, 50, 150);
-    static const TCODColor lightWall(130, 110, 50);
-    static const TCODColor lightGround(200, 180, 50);
+// Map colors
+extern const TCODColor darkWall;
+extern const TCODColor darkGround;
+extern const TCODColor lightWall;
+extern const TCODColor lightGround;
 
-    // Camera
-    static int FOV_RADIUS = 10;
+// Camera
+extern int FOV_RADIUS;
 
-    // Room constants
-    static const int ROOM_MAX_SIZE = 12;
-    static const int ROOM_MIN_SIZE = 6;
-    static const int MAX_ROOM_MONSTERS = 3;
-    static const int MAX_ROOM_ITEMS = 2;
-    static const int RECURSION_DEPTH = 8;
-    static const float MAX_H_RATIO = 1.5f;
-    static const float MAX_V_RATIO = 1.5f;
-}
+// Room constants
+extern const int ROOM_MAX_SIZE;
+extern const int ROOM_MIN_SIZE;
+extern const int MAX_ROOM_MONSTERS;
+extern const int MAX_ROOM_ITEMS;
+extern const int RECURSION_DEPTH;
+extern const float MAX_H_RATIO;
+extern const float MAX_V_RATIO;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -136,131 +137,128 @@ namespace LevelConstants
 // ACTOR CONSTANTS
 // ==================================================================================================================================
 
-namespace ActorConstants
-{
-    // Slots for each monster
-    static const int NUM_MONSTER_SLOTS = 5;
+// Slots for each monster
+const int NUM_MONSTER_SLOTS = 5;
+
+// Num attributes
+const int NUM_ATTRIBUTES = 3;
+
+// Types of monsters that will spawn in each level
+// 5th level will be boss battle with KITTY
+extern const MonsterType LEVEL_MONSTERS[LAST_LEVEL][NUM_MONSTER_SLOTS];
     
-    // Types of monsters that will spawn in each level
-    // 5th level will be boss battle with KITTY
-    static const int LEVEL_MONSTERS[LAST_LEVEL][NUM_MONSTER_SLOTS] =
-    { 
-        { MOUSE, MOUSE, MOUSE, MOUSE, MOUSE },
-        { MOUSE, MOUSE, PUPPY, PUPPY, PUPPY },
-        { MOUSE, MOUSE, PUPPY, PUPPY, DOG },
-        { MOUSE, PUPPY, DOG, DOG, VACUUM },
-        { KITTY_THE_GRAY, KITTY_THE_GRAY, KITTY_THE_GRAY, KITTY_THE_GRAY, KITTY_THE_GRAY }
-    };
-    
-    // Bool for boss
-    static const bool IS_BOSS = true;
-    
-    // Experience-related constants
-    static const int LEVEL_UP_BASE = 200;
-    static const int LEVEL_UP_FACTOR = 150;
-    
-    // Player attributes
-    static const int PLAYER_DEFAULT_X = 40;
-    static const int PLAYER_DEFAULT_Y = 25;
-    static const char* PLAYER_NAME = "Lucky";
-    static const char* PLAYER_CORPSE_NAME = "Lucky's corpse";
-    static const float PLAYER_MAX_HEALTH = 30;
-    static const float PLAYER_DEFENSE = 0;
-    static const float PLAYER_ATTACK = 4;
-    static const char PLAYER_CHAR = '@';
-    static const TCODColor PLAYER_COLOR = TCODColor::white;
-    static const int PLAYER_BASE_XP_DROP = 0;
+// Bool for boss
+extern const bool IS_BOSS;
 
-    // Mouse atrributes
-    static const char* MOUSE_NAME = "infected mouse";
-    static const char* MOUSE_CORPSE_NAME = "perished mouse";
-    static const float MOUSE_MAX_HEALTH = 5;
-    static const float MOUSE_DEFENSE = 0;
-    static const float MOUSE_ATTACK = 1;
-    static const char MOUSE_CHAR = 'm';
-    static const TCODColor MOUSE_COLOR = TCODColor::desaturatedSky;
-    static const int MOUSE_BASE_XP_DROP = 50;
+// Experience-related constants
+extern const int LEVEL_UP_BASE;
+extern const int LEVEL_UP_FACTOR;
 
-    // Puppy attributes
-    static const char* PUPPY_NAME = "evil puppy";
-    static const char* PUPPY_CORPSE_NAME = "dead puppy";
-    static const float PUPPY_MAX_HEALTH = 7;
-    static const float PUPPY_DEFENSE = 0;
-    static const float PUPPY_ATTACK = 1;
-    static const char PUPPY_CHAR = 'p';
-    static const TCODColor PUPPY_COLOR = TCODColor::violet;
-    static const int PUPPY_BASE_XP_DROP = 75;
+// Player attributes
+extern const int PLAYER_DEFAULT_X;
+extern const int PLAYER_DEFAULT_Y;
+extern const char* PLAYER_NAME;
+extern const char* PLAYER_CORPSE_NAME;
+extern const float PLAYER_MAX_HEALTH;
+extern const float PLAYER_DEFENSE;
+extern const float PLAYER_ATTACK;
+extern const char PLAYER_CHAR;
+extern const TCODColor PLAYER_COLOR;
+extern const int PLAYER_BASE_XP_DROP;
 
-    // Dog attributes
-    static const char* DOG_NAME = "rabid dog";
-    static const char* DOG_CORPSE_NAME = "slain dog";
-    static const float DOG_MAX_HEALTH = 10;
-    static const float DOG_DEFENSE = 1;
-    static const float DOG_ATTACK = 3;
-    static const char DOG_CHAR = 'D';
-    static const TCODColor DOG_COLOR = TCODColor::magenta;
-    static const int DOG_BASE_XP_DROP = 95;
+// Mouse atrributes
+extern const char* MOUSE_NAME;
+extern const char* MOUSE_CORPSE_NAME;
+extern float MOUSE_MAX_HEALTH;
+extern float MOUSE_DEFENSE;
+extern float MOUSE_ATTACK;
+extern const char MOUSE_CHAR;
+extern const TCODColor MOUSE_COLOR;
+extern int MOUSE_BASE_XP_DROP;
 
-    // Vacuum attributes
-    static const char* VACUUM_NAME = "vicious vacuum";
-    static const char* VACUUM_CORPSE_NAME = "dead vacuum";
-    static const float VACUUM_MAX_HEALTH = 15;
-    static const float VACUUM_DEFENSE = 2;
-    static const float VACUUM_ATTACK = 4;
-    static const char VACUUM_CHAR = 'V';
-    static const TCODColor VACUUM_COLOR = TCODColor::magenta;
-    static const int VACUUM_BASE_XP_DROP = 125;
+// Puppy attributes
+extern const char* PUPPY_NAME;
+extern const char* PUPPY_CORPSE_NAME;
+extern float PUPPY_MAX_HEALTH;
+extern float PUPPY_DEFENSE;
+extern float PUPPY_ATTACK;
+extern const char PUPPY_CHAR;
+extern const TCODColor PUPPY_COLOR;
+extern int PUPPY_BASE_XP_DROP;
 
-    // Kitty the gray attributes
-    static const char* KITTY_THE_GRAY_NAME = "Kitty The Gray";
-    static const char* KITTY_THE_GRAY_CORPSE_NAME = "dead as door nails Kitty The Gray";
-    static const float KITTY_THE_GRAY_MAX_HEALTH = 75;
-    static const float KITTY_THE_GRAY_DEFENSE = 3;
-    static const float KITTY_THE_GRAY_ATTACK = 6;
-    static const char KITTY_THE_GRAY_CHAR = 'K';
-    static const TCODColor KITTY_THE_GRAY_COLOR = TCODColor::crimson;
-    static const int KITTY_THE_GRAY_BASE_XP_DROP = 500;
+// Dog attributes
+extern const char* DOG_NAME;
+extern const char* DOG_CORPSE_NAME;
+extern float DOG_MAX_HEALTH;
+extern float DOG_DEFENSE;
+extern float DOG_ATTACK;
+extern const char DOG_CHAR;
+extern const TCODColor DOG_COLOR;
+extern int DOG_BASE_XP_DROP;
 
-    // Default symbols and colors for items on map
-    static const char POTION_CHAR = '!';
-    static const char SCROLL_CHAR = '#';
-    static const char STAIRS_CHAR = '>';
-    static const TCODColor POTION_COLOR = TCODColor::lightGreen;
-    static const TCODColor SCROLL_COLOR = TCODColor::lightYellow;
-    static const TCODColor STAIRS_COLOR = TCODColor::white;
+// Vacuum attributes
+extern const char* VACUUM_NAME;
+extern const char* VACUUM_CORPSE_NAME;
+extern float VACUUM_MAX_HEALTH;
+extern float VACUUM_DEFENSE;
+extern float VACUUM_ATTACK;
+extern const char VACUUM_CHAR;
+extern const TCODColor VACUUM_COLOR;
+extern int VACUUM_BASE_XP_DROP;
 
-    // Names for items
-    static const char* HEALER_NAME = "catnip juice";
-    static const char* LIGHTNING_NAME = "scroll of lightning claws";
-    static const char* FIREBALL_NAME = "scroll of fire hairball";
-    static const char* CONFUSER_NAME = "scroll of confused cats";
-    static const char* STAIRS_NAME = "stairs";
+// Kitty the gray attributes
+extern const char* KITTY_THE_GRAY_NAME;
+extern const char* KITTY_THE_GRAY_CORPSE_NAME;
+extern float KITTY_THE_GRAY_MAX_HEALTH;
+extern float KITTY_THE_GRAY_DEFENSE;
+extern float KITTY_THE_GRAY_ATTACK;
+extern const char KITTY_THE_GRAY_CHAR;
+extern const TCODColor KITTY_THE_GRAY_COLOR;
+extern const int KITTY_THE_GRAY_BASE_XP_DROP;
 
-    // Colors for items in inventory
-    static const TCODColor HEALER_COLOR = TCODColor::green;
-    static const TCODColor LIGHTNING_COLOR = TCODColor::yellow;
-    static const TCODColor FIREBALL_COLOR = TCODColor::amber;
-    static const TCODColor CONFUSER_COLOR = TCODColor::sky;
+// How monsters level up with you after every iteration of the levels.
+// Starts with base so we can get the correct attributes when we reload the game
+extern const float LEVEL_UP_MONSTERS[LAST_MONSTER + 1][NUM_ATTRIBUTES];
 
-    // Numbers associated with items
-    static const float HEALER_AMOUNT = 4;
-    static const float LIGHTNING_RANGE = 5;
-    static const float LIGHTNING_DAMAGE = 20;
-    static const float FIREBALL_RANGE = 3;
-    static const float FIREBALL_DAMAGE = 12;
-    static const float CONFUSER_RANGE = 10;
-    static const int CONFUSER_NUM_TURNS = 3;
+// Default symbols and colors for items on map
+extern const char POTION_CHAR;
+extern const char SCROLL_CHAR;
+extern const char STAIRS_CHAR;
+extern const TCODColor POTION_COLOR;
+extern const TCODColor SCROLL_COLOR;
+extern const TCODColor STAIRS_COLOR;
 
-    // Inventory items
-    static const bool IS_STACKABLE = true;
-    static const int ONE_ITEM_COUNT = 1;
+// Names for items
+extern const char* HEALER_NAME;
+extern const char* LIGHTNING_NAME;
+extern const char* FIREBALL_NAME;
+extern const char* CONFUSER_NAME;
+extern const char* STAIRS_NAME;
 
-    // How many turns the monster chases the player after losing his sight
-    static const int TRACKING_TURNS = 3;
+// Colors for items in inventory
+extern const TCODColor HEALER_COLOR;
+extern const TCODColor LIGHTNING_COLOR;
+extern const TCODColor FIREBALL_COLOR;
+extern const TCODColor CONFUSER_COLOR;
 
-    // Player inventory size
-    static const int INVENTORY_SIZE = 13;
-}
+// Numbers associated with items
+extern const float HEALER_AMOUNT;
+extern const float LIGHTNING_RANGE;
+extern const float LIGHTNING_DAMAGE;
+extern const float FIREBALL_RANGE;
+extern const float FIREBALL_DAMAGE;
+extern const float CONFUSER_RANGE;
+extern const int CONFUSER_NUM_TURNS;
+
+// Inventory items
+extern const bool IS_STACKABLE;
+extern const int ONE_ITEM_COUNT;
+
+// How many turns the monster chases the player after losing his sight
+extern const int TRACKING_TURNS;
+
+// Player inventory size
+extern const int INVENTORY_SIZE;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
