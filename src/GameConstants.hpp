@@ -59,7 +59,8 @@ enum AttributeType
 {
     HEALTH,
     ATTACK,
-    DEFENSE
+    DEFENSE,
+    XP
 };
 
 enum MonsterType
@@ -141,7 +142,7 @@ extern const float MAX_V_RATIO;
 const int NUM_MONSTER_SLOTS = 5;
 
 // Num attributes
-const int NUM_ATTRIBUTES = 3;
+const int NUM_ATTRIBUTES = 4;
 
 // Types of monsters that will spawn in each level
 // 5th level will be boss battle with KITTY
@@ -214,7 +215,7 @@ extern float KITTY_THE_GRAY_DEFENSE;
 extern float KITTY_THE_GRAY_ATTACK;
 extern const char KITTY_THE_GRAY_CHAR;
 extern const TCODColor KITTY_THE_GRAY_COLOR;
-extern const int KITTY_THE_GRAY_BASE_XP_DROP;
+extern int KITTY_THE_GRAY_BASE_XP_DROP;
 
 // How monsters level up with you after every iteration of the levels.
 // Starts with base so we can get the correct attributes when we reload the game

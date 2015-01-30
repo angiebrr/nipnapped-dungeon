@@ -336,7 +336,8 @@ void Engine::levelUpMonsters()
             {
                 MOUSE_MAX_HEALTH = scale * LEVEL_UP_MONSTERS[i][HEALTH];
                 MOUSE_ATTACK = scale * LEVEL_UP_MONSTERS[i][ATTACK];
-                MOUSE_DEFENSE = scale * LEVEL_UP_MONSTERS[i][DEFENSE];  
+                MOUSE_DEFENSE = scale * LEVEL_UP_MONSTERS[i][DEFENSE];
+                MOUSE_BASE_XP_DROP = scale * LEVEL_UP_MONSTERS[i][XP];
             }
             break;
             case PUPPY:
@@ -344,6 +345,7 @@ void Engine::levelUpMonsters()
                 PUPPY_MAX_HEALTH = scale * LEVEL_UP_MONSTERS[i][HEALTH];
                 PUPPY_ATTACK = scale * LEVEL_UP_MONSTERS[i][ATTACK];
                 PUPPY_DEFENSE = scale * LEVEL_UP_MONSTERS[i][DEFENSE];
+                PUPPY_BASE_XP_DROP = scale * LEVEL_UP_MONSTERS[i][XP];
             }
             break;
             case DOG:
@@ -351,13 +353,15 @@ void Engine::levelUpMonsters()
                 DOG_MAX_HEALTH = scale * LEVEL_UP_MONSTERS[i][HEALTH];
                 DOG_ATTACK =  scale * LEVEL_UP_MONSTERS[i][ATTACK];
                 DOG_DEFENSE = scale * LEVEL_UP_MONSTERS[i][DEFENSE];
+                DOG_BASE_XP_DROP = scale * LEVEL_UP_MONSTERS[i][XP];
             }
             break;
             case VACUUM:
             {
                 VACUUM_MAX_HEALTH = scale * LEVEL_UP_MONSTERS[i][HEALTH];
                 VACUUM_ATTACK =  scale * LEVEL_UP_MONSTERS[i][ATTACK];
-                VACUUM_DEFENSE = scale * LEVEL_UP_MONSTERS[i][DEFENSE]; 
+                VACUUM_DEFENSE = scale * LEVEL_UP_MONSTERS[i][DEFENSE];
+                VACUUM_BASE_XP_DROP = scale * LEVEL_UP_MONSTERS[i][XP];
             }
             break;
             case KITTY_THE_GRAY:
@@ -365,6 +369,7 @@ void Engine::levelUpMonsters()
                 KITTY_THE_GRAY_MAX_HEALTH = scale * LEVEL_UP_MONSTERS[i][HEALTH];
                 KITTY_THE_GRAY_ATTACK =  scale * LEVEL_UP_MONSTERS[i][ATTACK];
                 KITTY_THE_GRAY_DEFENSE = scale * LEVEL_UP_MONSTERS[i][DEFENSE];
+                KITTY_THE_GRAY_BASE_XP_DROP = scale * LEVEL_UP_MONSTERS[i][XP];
             }
             break;
             default: break;

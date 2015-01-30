@@ -138,17 +138,17 @@ float KITTY_THE_GRAY_DEFENSE = 3;
 float KITTY_THE_GRAY_ATTACK = 6;
 const char KITTY_THE_GRAY_CHAR = 'K';
 const TCODColor KITTY_THE_GRAY_COLOR = TCODColor::crimson;
-const int KITTY_THE_GRAY_BASE_XP_DROP = 500;
+int KITTY_THE_GRAY_BASE_XP_DROP = 500;
 
 // How monsters level up with you after every iteration of the levels.
 // Starts with base so we can get the correct attributes when we reload the game
 const float LEVEL_UP_MONSTERS[LAST_MONSTER + 1][NUM_ATTRIBUTES] =
 {
-    { MOUSE_MAX_HEALTH + 10.0f, MOUSE_ATTACK + 5.0f, MOUSE_DEFENSE + 0.5f },
-    { PUPPY_MAX_HEALTH + 10.0f, PUPPY_ATTACK + 5.0f, PUPPY_DEFENSE + 0.5f },
-    { DOG_MAX_HEALTH + 15.0f, DOG_ATTACK + 10.0f, DOG_DEFENSE +  1.0f },
-    { VACUUM_MAX_HEALTH + 20.0f, VACUUM_ATTACK + 8.0f, VACUUM_DEFENSE + 1.0f },
-    { KITTY_THE_GRAY_MAX_HEALTH + 40.0f, KITTY_THE_GRAY_ATTACK + 10.0f, KITTY_THE_GRAY_DEFENSE + 3.0f }
+    { MOUSE_MAX_HEALTH + 10.0f, MOUSE_ATTACK + 5.0f, MOUSE_DEFENSE + 0.5f, 1.5f * MOUSE_BASE_XP_DROP },
+    { PUPPY_MAX_HEALTH + 10.0f, PUPPY_ATTACK + 5.0f, PUPPY_DEFENSE + 0.5f, 1.5f * PUPPY_BASE_XP_DROP },
+    { DOG_MAX_HEALTH + 15.0f, DOG_ATTACK + 10.0f, DOG_DEFENSE +  1.0f, 1.5f * DOG_BASE_XP_DROP },
+    { VACUUM_MAX_HEALTH + 20.0f, VACUUM_ATTACK + 8.0f, VACUUM_DEFENSE + 1.0f, 1.5 * VACUUM_BASE_XP_DROP },
+    { KITTY_THE_GRAY_MAX_HEALTH + 40.0f, KITTY_THE_GRAY_ATTACK + 10.0f, KITTY_THE_GRAY_DEFENSE + 3.0f, 1.5 * KITTY_THE_GRAY_BASE_XP_DROP  }
 };
 
 // Default symbols and colors for items on map
